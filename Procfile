@@ -1,0 +1,1 @@
+worker: python alpaca_candle_bot.py
