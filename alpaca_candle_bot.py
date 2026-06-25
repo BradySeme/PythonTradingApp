@@ -39,8 +39,8 @@ from alpaca.trading.enums import QueryOrderStatus
 #  CONFIG — edit these before running
 # ─────────────────────────────────────────────
 
-API_KEY    = os.environ.get("API_KEY")
-API_SECRET = os.environ.get("API_SECRET")
+API_KEY    = os.environ.get("API_KEY", "PKIYR5XC6TUM3C6Z57EP5FUQIA")
+API_SECRET = os.environ.get("API_SECRET", "9PLmFbtf1kZuevCQGhUcmaSbv8rwMzvAcN4RS8zS5j17")
 
 # Set to True for paper trading, False for live
 PAPER_TRADING = True
