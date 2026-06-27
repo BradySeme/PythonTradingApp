@@ -93,6 +93,8 @@ logging.basicConfig(
         logging.FileHandler("candle_bot.log", encoding='utf-8'),
     ]
 )
+log = logging.getLogger("CandleBot")
+
 # ─────────────────────────────────────────────
 #  CANDLE DATACLASS
 # ─────────────────────────────────────────────
