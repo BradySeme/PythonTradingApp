@@ -19,8 +19,9 @@ import asyncio
 import logging
 import threading
 import os
+import pytz
 from collections import deque
-from datetime import datetime
+from datetime import datetime, time as dtime
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -34,6 +35,9 @@ from alpaca.data.enums import DataFeed
 from alpaca.trading.requests import LimitOrderRequest
 from alpaca.trading.requests import GetOrdersRequest
 from alpaca.trading.enums import QueryOrderStatus
+from alpaca.data.historical import StockHistoricalDataClient
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
 
 # ─────────────────────────────────────────────
 #  CONFIG — edit these before running
@@ -62,6 +66,9 @@ DOJI_BODY_THRESHOLD   = 0.05   # body is ≤5% of total range → doji
 HAMMER_SHADOW_RATIO   = 2.0    # lower shadow ≥ 2× body size
 ENGULF_CONFIRM        = True   # require full engulfing (strict)
 
+MIN_HOLD_MINUTES = 30       # minimum minutes before selling
+STOP_LOSS_PCT    = 0.02     # 2% stop loss
+
 # Pattern enable/disable toggles
 ENABLED_PATTERNS = {
     "dragonfly_doji":    True,
@@ -83,11 +90,9 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("candle_bot.log"),
+        logging.FileHandler("candle_bot.log", encoding='utf-8'),
     ]
 )
-log = logging.getLogger("CandleBot")
-
 # ─────────────────────────────────────────────
 #  CANDLE DATACLASS
 # ─────────────────────────────────────────────
@@ -309,6 +314,10 @@ class OrderManager:
 
                 order = self.client.submit_order(req)
                 log.info(f" BUY  {symbol} | ${notional:.2f} notional | order {order.id}")
+                position_entries[symbol] = {
+                    "entry_price": last_price,
+                    "entry_time": datetime.now(),
+                 }
 
             elif side == "sell":
                 qty = self.get_position_qty(symbol)
@@ -327,6 +336,7 @@ class OrderManager:
                 )
                 order = self.client.submit_order(req)
                 log.info(f" SELL {symbol} | {qty} units | order {order.id}")
+                position_entries.pop(symbol, None)
 
         except Exception as e:
             log.error(f"Order failed for {symbol}: {e}")
@@ -337,6 +347,15 @@ class OrderManager:
 
 # Store last 3 candles per symbol (enough for 3-candle patterns)
 bar_buffers: dict[str, deque] = {}
+# Tracks entry price and time for each position
+position_entries: dict[str, dict] = {}
+# Store pending signals waiting for recheck next candle
+pending_signals: dict[str, str] = {}
+
+def is_safe_trading_hours() -> bool:
+    et = pytz.timezone("America/New_York")
+    now = datetime.now(et).time()
+    return dtime(9, 45) <= now <= dtime(15, 45)
 
 def get_buffer(symbol: str) -> deque:
     if symbol not in bar_buffers:
@@ -354,10 +373,82 @@ def make_candle(symbol: str, bar: Bar) -> Candle:
         timestamp=bar.timestamp,
     )
 
+def calculate_rsi(closes: list, period: int = 14) -> float:
+    """Calculate RSI from a list of closing prices."""
+    if len(closes) < period + 1:
+        return 50.0  # neutral if not enough data
+    deltas = [closes[i+1] - closes[i] for i in range(len(closes)-1)]
+    gains = [d for d in deltas if d > 0]
+    losses = [-d for d in deltas if d < 0]
+    avg_gain = sum(gains[-period:]) / period
+    avg_loss = sum(losses[-period:]) / period
+    if avg_loss == 0:
+        return 100.0
+    rs = avg_gain / avg_loss
+    return 100 - (100 / (1 + rs))
+
+
+def get_rsi_and_trend(symbol: str, api_key: str, secret_key: str) -> tuple[float, bool]:
+    """
+    Fetch recent historical bars and return:
+    - RSI (14 period)
+    - above_200ma (True if price is above 200-day MA)
+    """
+    try:
+        client = StockHistoricalDataClient(api_key, secret_key)
+        request = StockBarsRequest(
+            symbol_or_symbols=symbol,
+            timeframe=TimeFrame.Day,
+            limit=210,  # enough for 200 MA + 14 RSI
+        )
+        bars = client.get_stock_bars(request)
+        closes = [bar.close for bar in bars[symbol]]
+
+        if len(closes) < 15:
+            return 50.0, True  # neutral defaults if not enough data
+
+        rsi = calculate_rsi(closes)
+        above_200ma = closes[-1] > (sum(closes[-200:]) / min(len(closes), 200))
+
+        return rsi, above_200ma
+
+    except Exception as e:
+        log.warning(f"Could not fetch RSI/trend for {symbol}: {e}")
+        return 50.0, True  # neutral defaults on error
+
+def should_sell(symbol: str, current_price: float) -> tuple[bool, str]:
+    """
+    Returns (True, reason) if allowed to sell, (False, reason) if not.
+    Checks minimum hold time and stop loss.
+    """
+    if symbol not in position_entries:
+        return True, "no entry tracked"
+
+    entry = position_entries[symbol]
+    entry_price = entry["entry_price"]
+    entry_time  = entry["entry_time"]
+    held_minutes = (datetime.now() - entry_time).total_seconds() / 60
+    loss_pct = (entry_price - current_price) / entry_price
+
+    # Always sell if stop loss hit regardless of hold time
+    if loss_pct >= STOP_LOSS_PCT:
+        return True, f"stop loss triggered ({loss_pct*100:.2f}% loss)"
+
+    # Block sell if minimum hold time not reached
+    if held_minutes < MIN_HOLD_MINUTES:
+        return False, f"held only {held_minutes:.1f} min, minimum is {MIN_HOLD_MINUTES}"
+
+    return True, f"hold time satisfied ({held_minutes:.1f} min)"
+
+
+
 def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str):
     candle = make_candle(symbol, bar)
     buf = get_buffer(symbol)
     buf.append(candle)
+
+    if asset_class == "stock" and not is_safe_trading_hours():
+        return
 
     log.debug(
         f"{symbol} | O:{candle.open:.4f} H:{candle.high:.4f} "
@@ -367,12 +458,74 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
     if len(buf) < 1:
         return
 
-    patterns = detect_patterns(buf)
-    if patterns:
-        log.info(f" {symbol} | Patterns detected: {', '.join(patterns)}")
-        signal = classify_signal(patterns)
-        if signal:
+    # Check if there's a pending signal from last candle waiting for recheck
+    if symbol in pending_signals:
+        signal = pending_signals.pop(symbol)
+        log.info(f"[RECHECK] {symbol} | Rechecking pending {signal} signal...")
+
+        if asset_class == "stock":
+            rsi, above_200ma = get_rsi_and_trend(symbol, API_KEY, API_SECRET)
+            log.info(f"[FILTER] {symbol} | RSI: {rsi:.1f} | Above 200MA: {above_200ma}")
+
+            if signal == "buy":
+                if rsi < 40 and above_200ma:
+                    log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing buy")
+                    order_mgr.place_order(symbol, signal, asset_class, candle.close)
+                else:
+                    log.info(f"[FILTER] {symbol} | Filters failed on recheck, skipping")
+
+            elif signal == "sell":
+                allowed, reason = should_sell(symbol, candle.close)
+                if not allowed:
+                    log.info(f"[HOLD] {symbol} | Sell blocked — {reason}")
+                    return
+                if rsi > 60 and not above_200ma:
+                    log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing sell")
+                    order_mgr.place_order(symbol, signal, asset_class, candle.close)
+                else:
+                    log.info(f"[FILTER] {symbol} | Filters failed on recheck, skipping")
+        else:
+            # Crypto — no filters, just place the order
             order_mgr.place_order(symbol, signal, asset_class, candle.close)
+        return
+
+    patterns = detect_patterns(buf)
+    if not patterns:
+        return
+
+    log.info(f"[PATTERN] {symbol} | Patterns detected: {', '.join(patterns)}")
+    signal = classify_signal(patterns)
+    if not signal:
+        return
+
+    # Crypto trades without filters
+    if asset_class == "crypto":
+        order_mgr.place_order(symbol, signal, asset_class, candle.close)
+        return
+
+    # Stocks — check RSI + trend filter
+    rsi, above_200ma = get_rsi_and_trend(symbol, API_KEY, API_SECRET)
+    log.info(f"[FILTER] {symbol} | RSI: {rsi:.1f} | Above 200MA: {above_200ma}")
+
+    if signal == "buy":
+        if rsi < 40 and above_200ma:
+            log.info(f"[FILTER] {symbol} | Filters passed, placing buy")
+            order_mgr.place_order(symbol, signal, asset_class, candle.close)
+        else:
+            log.info(f"[FILTER] {symbol} | Filters failed, waiting for next candle")
+            pending_signals[symbol] = signal
+
+    elif signal == "sell":
+        allowed, reason = should_sell(symbol, candle.close)
+        if not allowed:
+            log.info(f"[HOLD] {symbol} | Sell blocked — {reason}")
+            return
+        if rsi > 60 and not above_200ma:
+            log.info(f"[FILTER] {symbol} | Filters passed, placing sell")
+            order_mgr.place_order(symbol, signal, asset_class, candle.close)
+        else:
+            log.info(f"[FILTER] {symbol} | Filters failed, waiting for next candle")
+            pending_signals[symbol] = signal
 
 # ─────────────────────────────────────────────
 #  MAIN — STREAM SETUP
