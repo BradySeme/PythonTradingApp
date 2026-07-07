@@ -1,1 +1,1 @@
-worker: python alpaca_candle_botv2.py
+worker: python alpaca_candle_bot_v2.py
