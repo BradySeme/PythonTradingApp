@@ -30,6 +30,7 @@ from collections import deque
 from datetime import datetime, time as dtime
 from dataclasses import dataclass
 from typing import Optional
+from reporting import generate_report, REPORT_INTERVAL_HOURS
 
 # Optional .env support — create a file named `.env` next to this script with:
 #   API_KEY=your_key
@@ -386,6 +387,9 @@ bar_buffers: dict[str, deque] = {}
 # Store pending signals waiting for recheck next candle
 pending_signals: dict[str, str] = {}
 
+pattern_log = {}
+filter_stats = {"passed": 0, "rejected": 0}
+
 # Shared historical data client (reused instead of recreated per call)
 _hist_client: Optional[StockHistoricalDataClient] = None
 
@@ -652,7 +656,12 @@ async def main():
     stock_thread.start()
     crypto_thread.start()
 
-    await heartbeat()
+    async def report_loop():
+        while True:
+            generate_report(trading_client, log, pattern_log, filter_stats)
+            await asyncio.sleep(REPORT_INTERVAL_HOURS * 3600)
+
+    await asyncio.gather(heartbeat(), report_loop())
 
 
 if __name__ == "__main__":

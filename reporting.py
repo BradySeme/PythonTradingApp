@@ -32,6 +32,7 @@ import re
 from datetime import datetime, timezone
 from collections import defaultdict
 
+
 REPORT_FILE = "report_history.html"
 REPORT_INTERVAL_HOURS = 6
 MAX_SNAPSHOTS = 40          # prune oldest beyond this (~10 days at 6h)
