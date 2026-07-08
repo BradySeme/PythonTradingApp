@@ -31,6 +31,7 @@ from datetime import datetime, time as dtime
 from dataclasses import dataclass
 from typing import Optional
 from reporting import generate_report, REPORT_INTERVAL_HOURS
+from datetime import timedelta
 
 # Optional .env support — create a file named `.env` next to this script with:
 #   API_KEY=your_key
@@ -434,22 +435,20 @@ def calculate_rsi(closes: list, period: int = 14) -> float:
 
 
 def get_rsi_and_trend(symbol: str, api_key: str, secret_key: str) -> tuple[float, bool]:
-    """
-    Fetch recent daily bars and return:
-    - RSI (14 period)
-    - above_200ma (True if price is above 200-day MA)
-    """
-    global _hist_client
     try:
-        if _hist_client is None:
-            _hist_client = StockHistoricalDataClient(api_key, secret_key)
+        client = StockHistoricalDataClient(api_key, secret_key)
+        end = datetime.now()
+        start = end - timedelta(days=300)  # enough calendar days to get 210 trading days
 
         request = StockBarsRequest(
             symbol_or_symbols=symbol,
             timeframe=TimeFrame.Day,
-            limit=210,  # enough for 200 MA + 14 RSI
+            start=start,
+            end=end,
+            feed=DataFeed.IEX,
+            limit=210,
         )
-        bars = _hist_client.get_stock_bars(request)
+        bars = client.get_stock_bars(request)
         closes = [bar.close for bar in bars[symbol]]
         log.info(f"[RSI DEBUG] {symbol} | Got {len(closes)} closes")
 
@@ -458,12 +457,11 @@ def get_rsi_and_trend(symbol: str, api_key: str, secret_key: str) -> tuple[float
 
         rsi = calculate_rsi(closes)
         above_200ma = closes[-1] > (sum(closes[-200:]) / min(len(closes), 200))
-
         return rsi, above_200ma
 
     except Exception as e:
         log.warning(f"Could not fetch RSI/trend for {symbol}: {e}")
-        return 50.0, True  # neutral defaults on error
+        return 50.0, True
 
 
 def should_sell(symbol: str, current_price: float) -> tuple[bool, str]:
