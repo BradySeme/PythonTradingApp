@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot Session Log</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.4/luxon.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-luxon/1.3.1/chartjs-adapter-luxon.min.js"></script>
+<style>
+  :root{
+    --bg:#101318; --panel:#171b22; --panel-2:#12161d; --line:#232936;
+    --ink:#e8eaf0; --muted:#8a93a6; --up:#34d399; --down:#f87171;
+    --amber:#fbbf24; --blue:#60a5fa;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);padding:28px 20px 60px;max-width:1100px;margin:0 auto;}
+  .masthead{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:22px;}
+  .masthead h1{font-family:var(--mono);font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);}
+  .masthead p{color:var(--muted);font-size:.78rem;margin-top:6px;font-family:var(--mono);}
+  .snapshot{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:14px;overflow:hidden;}
+  .snapshot summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 16px;font-family:var(--mono);font-size:.8rem;user-select:none;}
+  .snapshot summary::-webkit-details-marker{display:none}
+  .snapshot summary:hover{background:var(--panel-2);}
+  .snapshot summary:focus-visible{outline:2px solid var(--blue);outline-offset:-2px;}
+  .snap-time{font-weight:700;color:var(--ink);letter-spacing:.04em;}
+  .caret{margin-left:auto;color:var(--muted);transition:transform .15s;}
+  .snapshot[open] .caret{transform:rotate(180deg);}
+  .snapshot-body{padding:16px;border-top:1px solid var(--line);}
+  .pill{background:var(--bg);border:1px solid var(--line);padding:3px 10px;border-radius:999px;font-size:.72rem;color:var(--muted);font-family:var(--mono);}
+  h4{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:18px 0 8px;}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+  .stat-card{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:12px;text-align:center;}
+  .stat-val{font-size:1.15rem;font-weight:700;font-family:var(--mono);}
+  .stat-lbl{font-size:.66rem;color:var(--muted);margin-top:5px;font-family:var(--mono);}
+  .chart-box{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:12px;}
+  .chart-box h4{margin:0 0 8px;}
+  .chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+  .table-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;}
+  .data-table{width:100%;border-collapse:collapse;font-size:.76rem;font-family:var(--mono);}
+  .data-table th,.data-table td{padding:6px 9px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
+  .data-table th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:.66rem;letter-spacing:.06em;}
+  .buy,.pos{color:var(--up);} .sell,.neg{color:var(--down);}
+  .empty{color:var(--muted);font-style:italic;}
+  .note{color:var(--muted);font-size:.72rem;font-family:var(--mono);margin-bottom:6px;}
+  @media (prefers-reduced-motion: reduce){ .caret{transition:none} }
+</style>
+<script>
+const RENDERED = new Set();
+
+function renderSnapshot(uid) {
+  if (RENDERED.has(uid) || typeof Chart === "undefined") return;
+  const dataEl = document.getElementById("data_" + uid);
+  if (!dataEl) return;
+  RENDERED.add(uid);
+  const d = JSON.parse(dataEl.textContent);
+
+  const grid = "#232936", tick = "#8a93a6", lbl = "#e8eaf0";
+  const opts = (yLabel) => ({
+    parsing: false, animation: false,
+    scales: {
+      x: { type: "time", ticks: { color: tick }, grid: { color: grid } },
+      y: { ticks: { color: tick }, grid: { color: grid },
+           title: { display: true, text: yLabel, color: lbl } }
+    },
+    plugins: { legend: { labels: { color: lbl } } }
+  });
+  const mk = (id, cfg) => {
+    const el = document.getElementById(id);
+    if (el) new Chart(el, cfg);
+  };
+
+  mk("cpl_" + uid, { type: "line",
+    data: { datasets: [{ label: "Cumulative P/L ($)", data: d.combinedPnl,
+      borderColor: "#60a5fa", backgroundColor: "rgba(96,165,250,.12)",
+      fill: true, tension: .25, pointRadius: 2 }] },
+    options: opts("P/L ($)") });
+
+  if (d.equity && d.equity.length) {
+    mk("eq_" + uid, { type: "line",
+      data: { datasets: [
+        { label: "Portfolio value", data: d.equity, borderColor: "#fbbf24",
+          backgroundColor: "rgba(251,191,36,.08)", fill: true, tension: .25, pointRadius: 0 },
+        { label: "Buy", data: d.buys, type: "scatter", pointStyle: "triangle",
+          pointRadius: 6, backgroundColor: "#34d399" },
+        { label: "Sell", data: d.sells, type: "scatter", pointStyle: "triangle",
+          rotation: 180, pointRadius: 6, backgroundColor: "#f87171" }
+      ] },
+      options: opts("Value ($)") });
+
+    const dd = []; let peak = null;
+    for (const p of d.equity) {
+      if (peak === null || p.y > peak) peak = p.y;
+      dd.push({ x: p.x, y: peak > 0 ? +(-((peak - p.y) / peak * 100)).toFixed(2) : 0 });
+    }
+    mk("dd_" + uid, { type: "line",
+      data: { datasets: [{ label: "Drawdown %", data: dd, borderColor: "#f87171",
+        backgroundColor: "rgba(248,113,113,.1)", fill: true, tension: .25, pointRadius: 0 }] },
+      options: opts("Drawdown (%)") });
+  }
+
+  const colors = ["#34d399", "#60a5fa", "#bc8cff", "#fbbf24", "#f0883e", "#79c0ff", "#d2a8ff", "#56d364"];
+  Object.keys(d.symPnl).forEach((sym, i) => {
+    mk("sym_" + sym.replace("/", "") + "_" + uid, { type: "line",
+      data: { datasets: [{ label: sym + " P/L", data: d.symPnl[sym],
+        borderColor: colors[i % colors.length], backgroundColor: "rgba(96,165,250,.05)",
+        fill: true, tension: .25, pointRadius: 2 }] },
+      options: opts("P/L ($)") });
+  });
+}
+
+function registerSnapshot(uid) {
+  const det = document.getElementById("snap_" + uid);
+  if (!det) return;
+  if (det.open) requestAnimationFrame(() => renderSnapshot(uid));
+  det.addEventListener("toggle", () => { if (det.open) renderSnapshot(uid); });
+}
+</script>
+</head>
+<body>
+<header class="masthead">
+  <h1>Bot Session Log</h1>
+  <p>Snapshot appended every 6 hours · newest first · click a row to expand · keeps last 40 snapshots</p>
+</header>
+<!--INSERT_POINT-->
+<!--SNAP_START-->
+<details class="snapshot" id="snap_20260707_1830" open>
+  <summary>
+    <span class="snap-time">2026-07-07 18:30</span>
+    <span class="pill">40 trades</span>
+    <span class="pill" style="color:#F87171">$-621.30</span>
+    <span class="pill">WR 0.0%</span>
+    <span class="pill" style="color:#34D399">DD 0.0%</span>
+    <span class="caret">▾</span>
+  </summary>
+  <div class="snapshot-body">
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val" style="color:#F87171">$-621.30</div><div class="stat-lbl">Realized P/L</div></div>
+      <div class="stat-card"><div class="stat-val">0.0%</div><div class="stat-lbl">Win rate · 0W 9L</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:#F87171">0.0</div><div class="stat-lbl">Profit factor</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:#34D399">0.0%</div><div class="stat-lbl">Max drawdown</div></div>
+      <div class="stat-card"><div class="stat-val">56.6m</div><div class="stat-lbl">Avg hold · W 0m / L 56.6m</div></div>
+      <div class="stat-card"><div class="stat-val pos">BTC/USD +$-2.14</div><div class="stat-lbl">Best trade</div></div>
+      <div class="stat-card"><div class="stat-val neg">ETH/USD $-251.77</div><div class="stat-lbl">Worst trade</div></div>
+      <div class="stat-card"><div class="stat-val">0 / 0</div><div class="stat-lbl">Filters passed / rejected (0%)</div></div>
+    </div>
+
+    <h4>Open positions</h4>
+    <table class="data-table">
+      <thead><tr><th>Symbol</th><th>Qty</th><th>Avg entry</th><th>Current</th><th>Value</th><th>Unrealized P/L</th></tr></thead>
+      <tbody><tr><td>BTCUSD</td><td>0.2323</td><td>$63539.83</td><td>$63450.12</td><td>$14,740.35</td><td class="neg">$-20.84 (-0.14%)</td></tr><tr><td>ETHUSD</td><td>2.7658</td><td>$1778.80</td><td>$1774.23</td><td>$4,907.19</td><td class="neg">$-12.64 (-0.26%)</td></tr></tbody>
+    </table>
+
+    <div class="chart-box wide"><h4>Cumulative realized P/L</h4><canvas id="cpl_20260707_1830" height="190"></canvas></div>
+    
+
+    <h4>By symbol</h4>
+    <div class="chart-grid"><div class="chart-box"><h4>BTC/USD</h4><canvas id="sym_BTCUSD_20260707_1830" height="170"></canvas></div><div class="chart-box"><h4>ETH/USD</h4><canvas id="sym_ETHUSD_20260707_1830" height="170"></canvas></div></div>
+
+    <div class="table-grid">
+      <div>
+        <h4>Win rate by pattern</h4>
+        <table class="data-table"><thead><tr><th>Pattern</th><th>Trades</th><th>Win %</th><th>P/L</th></tr></thead>
+        <tbody><tr><td>unknown</td><td>9</td><td style="color:#F87171">0.0%</td><td class="neg">$-621.30</td></tr></tbody></table>
+      </div>
+      <div>
+        <h4>Win rate by symbol</h4>
+        <table class="data-table"><thead><tr><th>Symbol</th><th>Trades</th><th>Win %</th><th>P/L</th></tr></thead>
+        <tbody><tr><td>BTC/USD</td><td>6</td><td style="color:#F87171">0.0%</td><td class="neg">$-273.65</td></tr><tr><td>ETH/USD</td><td>3</td><td style="color:#F87171">0.0%</td><td class="neg">$-347.65</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <h4>Trade log</h4>
+    
+    <table class="data-table">
+      <thead><tr><th>Time</th><th>Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>Pattern</th><th>Hold</th><th>P/L</th></tr></thead>
+      <tbody><tr><td>07-07 18:30</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7727</td><td>$1778.80</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 18:30</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0776</td><td>$63596.47</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 18:24</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0776</td><td>$63567.40</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 18:13</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0777</td><td>$63455.80</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 18:03</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.3105</td><td>$63272.67</td><td>unknown</td><td>74.0m</td><td class="neg">$-87.67</td></tr><tr><td>07-07 17:59</td><td>ETH/USD</td><td class="sell">SELL</td><td>5.5444</td><td>$1766.79</td><td>unknown</td><td>159.3m</td><td class="neg">$-88.82</td></tr><tr><td>07-07 16:49</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0778</td><td>$63529.18</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:54</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$63481.90</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:44</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0780</td><td>$63386.23</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:19</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7810</td><td>$1779.69</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:08</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0775</td><td>$63816.38</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:59</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2327</td><td>$63598.32</td><td>unknown</td><td>29.5m</td><td class="neg">$-40.31</td></tr><tr><td>07-07 14:34</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7745</td><td>$1785.89</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:29</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0777</td><td>$63784.68</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:25</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0778</td><td>$63730.00</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:20</td><td>ETH/USD</td><td class="sell">SELL</td><td>8.3147</td><td>$1785.21</td><td>unknown</td><td>36.0m</td><td class="neg">$-7.06</td></tr><tr><td>07-07 14:17</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0777</td><td>$63803.66</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:10</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2334</td><td>$63642.74</td><td>unknown</td><td>33.0m</td><td class="neg">$-2.14</td></tr><tr><td>07-07 13:44</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7736</td><td>$1789.19</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:42</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7720</td><td>$1790.62</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:37</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$63783.30</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:28</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0780</td><td>$63613.54</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:27</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$63551.47</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:26</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2331</td><td>$63490.55</td><td>unknown</td><td>48.0m</td><td class="neg">$-118.09</td></tr><tr><td>07-07 13:20</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7899</td><td>$1778.30</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:19</td><td>ETH/USD</td><td class="sell">SELL</td><td>8.2851</td><td>$1773.75</td><td>unknown</td><td>42.0m</td><td class="neg">$-251.77</td></tr><tr><td>07-07 12:38</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64007.53</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:37</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7669</td><td>$1801.93</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:35</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64000.97</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:30</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$63981.74</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:25</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2331</td><td>$63983.55</td><td>unknown</td><td>57.0m</td><td class="neg">$-19.45</td></tr><tr><td>07-07 11:28</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0778</td><td>$64097.77</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 11:12</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64053.87</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 11:07</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64050.20</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 11:02</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2336</td><td>$63929.13</td><td>unknown</td><td>31.0m</td><td class="neg">$-5.99</td></tr><tr><td>07-07 10:57</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7675</td><td>$1806.10</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:46</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7687</td><td>$1804.39</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:31</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$64029.30</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:28</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$64001.40</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:23</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$63833.63</td><td>unknown</td><td>—</td><td class="pos">—</td></tr></tbody>
+    </table>
+  </div>
+  <script type="application/json" id="data_20260707_1830">{"combinedPnl": [{"x": "2026-07-07T16:23:00.664198+00:00", "y": 0}, {"x": "2026-07-07T16:28:00.604616+00:00", "y": 0}, {"x": "2026-07-07T16:31:00.616280+00:00", "y": 0}, {"x": "2026-07-07T16:46:00.386511+00:00", "y": 0}, {"x": "2026-07-07T16:57:00.814792+00:00", "y": 0}, {"x": "2026-07-07T17:02:00.508033+00:00", "y": -5.99}, {"x": "2026-07-07T17:07:00.587692+00:00", "y": -5.99}, {"x": "2026-07-07T17:12:00.714169+00:00", "y": -5.99}, {"x": "2026-07-07T17:28:00.440541+00:00", "y": -5.99}, {"x": "2026-07-07T18:25:00.399210+00:00", "y": -25.44}, {"x": "2026-07-07T18:30:01.162420+00:00", "y": -25.44}, {"x": "2026-07-07T18:35:00.336140+00:00", "y": -25.44}, {"x": "2026-07-07T18:37:00.305576+00:00", "y": -25.44}, {"x": "2026-07-07T18:38:00.150963+00:00", "y": -25.44}, {"x": "2026-07-07T19:19:00.761287+00:00", "y": -277.21}, {"x": "2026-07-07T19:20:00.204143+00:00", "y": -277.21}, {"x": "2026-07-07T19:26:00.397110+00:00", "y": -395.3}, {"x": "2026-07-07T19:27:00.166238+00:00", "y": -395.3}, {"x": "2026-07-07T19:28:00.154871+00:00", "y": -395.3}, {"x": "2026-07-07T19:37:00.436153+00:00", "y": -395.3}, {"x": "2026-07-07T19:42:00.323603+00:00", "y": -395.3}, {"x": "2026-07-07T19:44:00.302284+00:00", "y": -395.3}, {"x": "2026-07-07T20:10:00.287567+00:00", "y": -397.44}, {"x": "2026-07-07T20:17:00.157926+00:00", "y": -397.44}, {"x": "2026-07-07T20:20:00.290430+00:00", "y": -404.5}, {"x": "2026-07-07T20:25:00.315590+00:00", "y": -404.5}, {"x": "2026-07-07T20:29:30.604180+00:00", "y": -404.5}, {"x": "2026-07-07T20:34:00.285012+00:00", "y": -404.5}, {"x": "2026-07-07T20:59:00.289958+00:00", "y": -444.81}, {"x": "2026-07-07T21:08:00.299115+00:00", "y": -444.81}, {"x": "2026-07-07T21:19:40.971126+00:00", "y": -444.81}, {"x": "2026-07-07T21:44:00.314628+00:00", "y": -444.81}, {"x": "2026-07-07T21:54:00.289974+00:00", "y": -444.81}, {"x": "2026-07-07T22:49:00.297242+00:00", "y": -444.81}, {"x": "2026-07-07T23:59:00.386477+00:00", "y": -533.63}, {"x": "2026-07-08T00:03:00.284952+00:00", "y": -621.3}, {"x": "2026-07-08T00:13:00.283020+00:00", "y": -621.3}, {"x": "2026-07-08T00:24:00.298327+00:00", "y": -621.3}, {"x": "2026-07-08T00:30:00.308994+00:00", "y": -621.3}, {"x": "2026-07-08T00:30:00.455107+00:00", "y": -621.3}], "equity": [], "buys": [{"x": "2026-07-07T16:23:00.664198+00:00", "y": 63833.627}, {"x": "2026-07-07T16:28:00.604616+00:00", "y": 64001.399}, {"x": "2026-07-07T16:31:00.616280+00:00", "y": 64029.3}, {"x": "2026-07-07T16:46:00.386511+00:00", "y": 1804.395}, {"x": "2026-07-07T16:57:00.814792+00:00", "y": 1806.1}, {"x": "2026-07-07T17:07:00.587692+00:00", "y": 64050.2}, {"x": "2026-07-07T17:12:00.714169+00:00", "y": 64053.87}, {"x": "2026-07-07T17:28:00.440541+00:00", "y": 64097.767}, {"x": "2026-07-07T18:30:01.162420+00:00", "y": 63981.739}, {"x": "2026-07-07T18:35:00.336140+00:00", "y": 64000.97}, {"x": "2026-07-07T18:37:00.305576+00:00", "y": 1801.928}, {"x": "2026-07-07T18:38:00.150963+00:00", "y": 64007.532}, {"x": "2026-07-07T19:20:00.204143+00:00", "y": 1778.295}, {"x": "2026-07-07T19:27:00.166238+00:00", "y": 63551.474}, {"x": "2026-07-07T19:28:00.154871+00:00", "y": 63613.54}, {"x": "2026-07-07T19:37:00.436153+00:00", "y": 63783.3}, {"x": "2026-07-07T19:42:00.323603+00:00", "y": 1790.618638978}, {"x": "2026-07-07T19:44:00.302284+00:00", "y": 1789.188}, {"x": "2026-07-07T20:17:00.157926+00:00", "y": 63803.66}, {"x": "2026-07-07T20:25:00.315590+00:00", "y": 63730.0}, {"x": "2026-07-07T20:29:30.604180+00:00", "y": 63784.68}, {"x": "2026-07-07T20:34:00.285012+00:00", "y": 1785.89}, {"x": "2026-07-07T21:08:00.299115+00:00", "y": 63816.378}, {"x": "2026-07-07T21:19:40.971126+00:00", "y": 1779.69}, {"x": "2026-07-07T21:44:00.314628+00:00", "y": 63386.233}, {"x": "2026-07-07T21:54:00.289974+00:00", "y": 63481.9}, {"x": "2026-07-07T22:49:00.297242+00:00", "y": 63529.18}, {"x": "2026-07-08T00:13:00.283020+00:00", "y": 63455.8}, {"x": "2026-07-08T00:24:00.298327+00:00", "y": 63567.4}, {"x": "2026-07-08T00:30:00.308994+00:00", "y": 63596.47}, {"x": "2026-07-08T00:30:00.455107+00:00", "y": 1778.8}], "sells": [{"x": "2026-07-07T17:02:00.508033+00:00", "y": 63929.126598596}, {"x": "2026-07-07T18:25:00.399210+00:00", "y": 63983.553968139}, {"x": "2026-07-07T19:19:00.761287+00:00", "y": 1773.752213048}, {"x": "2026-07-07T19:26:00.397110+00:00", "y": 63490.552755967}, {"x": "2026-07-07T20:10:00.287567+00:00", "y": 63642.738782453}, {"x": "2026-07-07T20:20:00.290430+00:00", "y": 1785.20719343}, {"x": "2026-07-07T20:59:00.289958+00:00", "y": 63598.317669252}, {"x": "2026-07-07T23:59:00.386477+00:00", "y": 1766.788956742}, {"x": "2026-07-08T00:03:00.284952+00:00", "y": 63272.667534299}], "symPnl": {"BTC/USD": [{"x": "2026-07-07T16:23:00.664198+00:00", "y": 0}, {"x": "2026-07-07T16:28:00.604616+00:00", "y": 0}, {"x": "2026-07-07T16:31:00.616280+00:00", "y": 0}, {"x": "2026-07-07T17:02:00.508033+00:00", "y": -5.99}, {"x": "2026-07-07T17:07:00.587692+00:00", "y": -5.99}, {"x": "2026-07-07T17:12:00.714169+00:00", "y": -5.99}, {"x": "2026-07-07T17:28:00.440541+00:00", "y": -5.99}, {"x": "2026-07-07T18:25:00.399210+00:00", "y": -25.44}, {"x": "2026-07-07T18:30:01.162420+00:00", "y": -25.44}, {"x": "2026-07-07T18:35:00.336140+00:00", "y": -25.44}, {"x": "2026-07-07T18:38:00.150963+00:00", "y": -25.44}, {"x": "2026-07-07T19:26:00.397110+00:00", "y": -143.53}, {"x": "2026-07-07T19:27:00.166238+00:00", "y": -143.53}, {"x": "2026-07-07T19:28:00.154871+00:00", "y": -143.53}, {"x": "2026-07-07T19:37:00.436153+00:00", "y": -143.53}, {"x": "2026-07-07T20:10:00.287567+00:00", "y": -145.67}, {"x": "2026-07-07T20:17:00.157926+00:00", "y": -145.67}, {"x": "2026-07-07T20:25:00.315590+00:00", "y": -145.67}, {"x": "2026-07-07T20:29:30.604180+00:00", "y": -145.67}, {"x": "2026-07-07T20:59:00.289958+00:00", "y": -185.98}, {"x": "2026-07-07T21:08:00.299115+00:00", "y": -185.98}, {"x": "2026-07-07T21:44:00.314628+00:00", "y": -185.98}, {"x": "2026-07-07T21:54:00.289974+00:00", "y": -185.98}, {"x": "2026-07-07T22:49:00.297242+00:00", "y": -185.98}, {"x": "2026-07-08T00:03:00.284952+00:00", "y": -273.65}, {"x": "2026-07-08T00:13:00.283020+00:00", "y": -273.65}, {"x": "2026-07-08T00:24:00.298327+00:00", "y": -273.65}, {"x": "2026-07-08T00:30:00.308994+00:00", "y": -273.65}], "ETH/USD": [{"x": "2026-07-07T16:46:00.386511+00:00", "y": 0}, {"x": "2026-07-07T16:57:00.814792+00:00", "y": 0}, {"x": "2026-07-07T18:37:00.305576+00:00", "y": 0}, {"x": "2026-07-07T19:19:00.761287+00:00", "y": -251.77}, {"x": "2026-07-07T19:20:00.204143+00:00", "y": -251.77}, {"x": "2026-07-07T19:42:00.323603+00:00", "y": -251.77}, {"x": "2026-07-07T19:44:00.302284+00:00", "y": -251.77}, {"x": "2026-07-07T20:20:00.290430+00:00", "y": -258.83}, {"x": "2026-07-07T20:34:00.285012+00:00", "y": -258.83}, {"x": "2026-07-07T21:19:40.971126+00:00", "y": -258.83}, {"x": "2026-07-07T23:59:00.386477+00:00", "y": -347.65}, {"x": "2026-07-08T00:30:00.455107+00:00", "y": -347.65}]}}</script>
+</details>
+<script>registerSnapshot("20260707_1830");</script>
+<!--SNAP_END-->
+<!--SNAP_START-->
+<details class="snapshot" id="snap_20260707_1709">
+  <summary>
+    <span class="snap-time">2026-07-07 17:09</span>
+    <span class="pill">34 trades</span>
+    <span class="pill" style="color:#F87171">$-444.81</span>
+    <span class="pill">WR 0.0%</span>
+    <span class="pill" style="color:#34D399">DD 0.0%</span>
+    <span class="caret">▾</span>
+  </summary>
+  <div class="snapshot-body">
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val" style="color:#F87171">$-444.81</div><div class="stat-lbl">Realized P/L</div></div>
+      <div class="stat-card"><div class="stat-val">0.0%</div><div class="stat-lbl">Win rate · 0W 7L</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:#F87171">0.0</div><div class="stat-lbl">Profit factor</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:#34D399">0.0%</div><div class="stat-lbl">Max drawdown</div></div>
+      <div class="stat-card"><div class="stat-val">39.5m</div><div class="stat-lbl">Avg hold · W 0m / L 39.5m</div></div>
+      <div class="stat-card"><div class="stat-val pos">BTC/USD +$-2.14</div><div class="stat-lbl">Best trade</div></div>
+      <div class="stat-card"><div class="stat-val neg">ETH/USD $-251.77</div><div class="stat-lbl">Worst trade</div></div>
+      <div class="stat-card"><div class="stat-val">0 / 0</div><div class="stat-lbl">Filters passed / rejected (0%)</div></div>
+    </div>
+
+    <h4>Open positions</h4>
+    <table class="data-table">
+      <thead><tr><th>Symbol</th><th>Qty</th><th>Avg entry</th><th>Current</th><th>Value</th><th>Unrealized P/L</th></tr></thead>
+      <tbody><tr><td>BTCUSD</td><td>0.3105</td><td>$63553.08</td><td>$63640.97</td><td>$19,758.46</td><td class="pos">+$27.29 (+0.14%)</td></tr><tr><td>ETHUSD</td><td>5.5444</td><td>$1782.78</td><td>$1777.66</td><td>$9,855.97</td><td class="neg">$-28.41 (-0.29%)</td></tr></tbody>
+    </table>
+
+    <div class="chart-box wide"><h4>Cumulative realized P/L</h4><canvas id="cpl_20260707_1709" height="190"></canvas></div>
+    
+
+    <h4>By symbol</h4>
+    <div class="chart-grid"><div class="chart-box"><h4>BTC/USD</h4><canvas id="sym_BTCUSD_20260707_1709" height="170"></canvas></div><div class="chart-box"><h4>ETH/USD</h4><canvas id="sym_ETHUSD_20260707_1709" height="170"></canvas></div></div>
+
+    <div class="table-grid">
+      <div>
+        <h4>Win rate by pattern</h4>
+        <table class="data-table"><thead><tr><th>Pattern</th><th>Trades</th><th>Win %</th><th>P/L</th></tr></thead>
+        <tbody><tr><td>unknown</td><td>7</td><td style="color:#F87171">0.0%</td><td class="neg">$-444.81</td></tr></tbody></table>
+      </div>
+      <div>
+        <h4>Win rate by symbol</h4>
+        <table class="data-table"><thead><tr><th>Symbol</th><th>Trades</th><th>Win %</th><th>P/L</th></tr></thead>
+        <tbody><tr><td>BTC/USD</td><td>5</td><td style="color:#F87171">0.0%</td><td class="neg">$-185.98</td></tr><tr><td>ETH/USD</td><td>2</td><td style="color:#F87171">0.0%</td><td class="neg">$-258.83</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <h4>Trade log</h4>
+    
+    <table class="data-table">
+      <thead><tr><th>Time</th><th>Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>Pattern</th><th>Hold</th><th>P/L</th></tr></thead>
+      <tbody><tr><td>07-07 16:49</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0778</td><td>$63529.18</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:54</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$63481.90</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:44</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0780</td><td>$63386.23</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:19</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7810</td><td>$1779.69</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 15:08</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0775</td><td>$63816.38</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:59</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2327</td><td>$63598.32</td><td>unknown</td><td>29.5m</td><td class="neg">$-40.31</td></tr><tr><td>07-07 14:34</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7745</td><td>$1785.89</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:29</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0777</td><td>$63784.68</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:25</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0778</td><td>$63730.00</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:20</td><td>ETH/USD</td><td class="sell">SELL</td><td>8.3147</td><td>$1785.21</td><td>unknown</td><td>36.0m</td><td class="neg">$-7.06</td></tr><tr><td>07-07 14:17</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0777</td><td>$63803.66</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 14:10</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2334</td><td>$63642.74</td><td>unknown</td><td>33.0m</td><td class="neg">$-2.14</td></tr><tr><td>07-07 13:44</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7736</td><td>$1789.19</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:42</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7720</td><td>$1790.62</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:37</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$63783.30</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:28</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0780</td><td>$63613.54</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:27</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$63551.47</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:26</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2331</td><td>$63490.55</td><td>unknown</td><td>48.0m</td><td class="neg">$-118.09</td></tr><tr><td>07-07 13:20</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7899</td><td>$1778.30</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 13:19</td><td>ETH/USD</td><td class="sell">SELL</td><td>8.2851</td><td>$1773.75</td><td>unknown</td><td>42.0m</td><td class="neg">$-251.77</td></tr><tr><td>07-07 12:38</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64007.53</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:37</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7669</td><td>$1801.93</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:35</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64000.97</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:30</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$63981.74</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 12:25</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2331</td><td>$63983.55</td><td>unknown</td><td>57.0m</td><td class="neg">$-19.45</td></tr><tr><td>07-07 11:28</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0778</td><td>$64097.77</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 11:12</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64053.87</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 11:07</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0779</td><td>$64050.20</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 11:02</td><td>BTC/USD</td><td class="sell">SELL</td><td>0.2336</td><td>$63929.13</td><td>unknown</td><td>31.0m</td><td class="neg">$-5.99</td></tr><tr><td>07-07 10:57</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7675</td><td>$1806.10</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:46</td><td>ETH/USD</td><td class="buy">BUY</td><td>2.7687</td><td>$1804.39</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:31</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$64029.30</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:28</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$64001.40</td><td>unknown</td><td>—</td><td class="pos">—</td></tr><tr><td>07-07 10:23</td><td>BTC/USD</td><td class="buy">BUY</td><td>0.0781</td><td>$63833.63</td><td>unknown</td><td>—</td><td class="pos">—</td></tr></tbody>
+    </table>
+  </div>
+  <script type="application/json" id="data_20260707_1709">{"combinedPnl": [{"x": "2026-07-07T16:23:00.664198+00:00", "y": 0}, {"x": "2026-07-07T16:28:00.604616+00:00", "y": 0}, {"x": "2026-07-07T16:31:00.616280+00:00", "y": 0}, {"x": "2026-07-07T16:46:00.386511+00:00", "y": 0}, {"x": "2026-07-07T16:57:00.814792+00:00", "y": 0}, {"x": "2026-07-07T17:02:00.508033+00:00", "y": -5.99}, {"x": "2026-07-07T17:07:00.587692+00:00", "y": -5.99}, {"x": "2026-07-07T17:12:00.714169+00:00", "y": -5.99}, {"x": "2026-07-07T17:28:00.440541+00:00", "y": -5.99}, {"x": "2026-07-07T18:25:00.399210+00:00", "y": -25.44}, {"x": "2026-07-07T18:30:01.162420+00:00", "y": -25.44}, {"x": "2026-07-07T18:35:00.336140+00:00", "y": -25.44}, {"x": "2026-07-07T18:37:00.305576+00:00", "y": -25.44}, {"x": "2026-07-07T18:38:00.150963+00:00", "y": -25.44}, {"x": "2026-07-07T19:19:00.761287+00:00", "y": -277.21}, {"x": "2026-07-07T19:20:00.204143+00:00", "y": -277.21}, {"x": "2026-07-07T19:26:00.397110+00:00", "y": -395.3}, {"x": "2026-07-07T19:27:00.166238+00:00", "y": -395.3}, {"x": "2026-07-07T19:28:00.154871+00:00", "y": -395.3}, {"x": "2026-07-07T19:37:00.436153+00:00", "y": -395.3}, {"x": "2026-07-07T19:42:00.323603+00:00", "y": -395.3}, {"x": "2026-07-07T19:44:00.302284+00:00", "y": -395.3}, {"x": "2026-07-07T20:10:00.287567+00:00", "y": -397.44}, {"x": "2026-07-07T20:17:00.157926+00:00", "y": -397.44}, {"x": "2026-07-07T20:20:00.290430+00:00", "y": -404.5}, {"x": "2026-07-07T20:25:00.315590+00:00", "y": -404.5}, {"x": "2026-07-07T20:29:30.604180+00:00", "y": -404.5}, {"x": "2026-07-07T20:34:00.285012+00:00", "y": -404.5}, {"x": "2026-07-07T20:59:00.289958+00:00", "y": -444.81}, {"x": "2026-07-07T21:08:00.299115+00:00", "y": -444.81}, {"x": "2026-07-07T21:19:40.971126+00:00", "y": -444.81}, {"x": "2026-07-07T21:44:00.314628+00:00", "y": -444.81}, {"x": "2026-07-07T21:54:00.289974+00:00", "y": -444.81}, {"x": "2026-07-07T22:49:00.297242+00:00", "y": -444.81}], "equity": [], "buys": [{"x": "2026-07-07T16:23:00.664198+00:00", "y": 63833.627}, {"x": "2026-07-07T16:28:00.604616+00:00", "y": 64001.399}, {"x": "2026-07-07T16:31:00.616280+00:00", "y": 64029.3}, {"x": "2026-07-07T16:46:00.386511+00:00", "y": 1804.395}, {"x": "2026-07-07T16:57:00.814792+00:00", "y": 1806.1}, {"x": "2026-07-07T17:07:00.587692+00:00", "y": 64050.2}, {"x": "2026-07-07T17:12:00.714169+00:00", "y": 64053.87}, {"x": "2026-07-07T17:28:00.440541+00:00", "y": 64097.767}, {"x": "2026-07-07T18:30:01.162420+00:00", "y": 63981.739}, {"x": "2026-07-07T18:35:00.336140+00:00", "y": 64000.97}, {"x": "2026-07-07T18:37:00.305576+00:00", "y": 1801.928}, {"x": "2026-07-07T18:38:00.150963+00:00", "y": 64007.532}, {"x": "2026-07-07T19:20:00.204143+00:00", "y": 1778.295}, {"x": "2026-07-07T19:27:00.166238+00:00", "y": 63551.474}, {"x": "2026-07-07T19:28:00.154871+00:00", "y": 63613.54}, {"x": "2026-07-07T19:37:00.436153+00:00", "y": 63783.3}, {"x": "2026-07-07T19:42:00.323603+00:00", "y": 1790.618638978}, {"x": "2026-07-07T19:44:00.302284+00:00", "y": 1789.188}, {"x": "2026-07-07T20:17:00.157926+00:00", "y": 63803.66}, {"x": "2026-07-07T20:25:00.315590+00:00", "y": 63730.0}, {"x": "2026-07-07T20:29:30.604180+00:00", "y": 63784.68}, {"x": "2026-07-07T20:34:00.285012+00:00", "y": 1785.89}, {"x": "2026-07-07T21:08:00.299115+00:00", "y": 63816.378}, {"x": "2026-07-07T21:19:40.971126+00:00", "y": 1779.69}, {"x": "2026-07-07T21:44:00.314628+00:00", "y": 63386.233}, {"x": "2026-07-07T21:54:00.289974+00:00", "y": 63481.9}, {"x": "2026-07-07T22:49:00.297242+00:00", "y": 63529.18}], "sells": [{"x": "2026-07-07T17:02:00.508033+00:00", "y": 63929.126598596}, {"x": "2026-07-07T18:25:00.399210+00:00", "y": 63983.553968139}, {"x": "2026-07-07T19:19:00.761287+00:00", "y": 1773.752213048}, {"x": "2026-07-07T19:26:00.397110+00:00", "y": 63490.552755967}, {"x": "2026-07-07T20:10:00.287567+00:00", "y": 63642.738782453}, {"x": "2026-07-07T20:20:00.290430+00:00", "y": 1785.20719343}, {"x": "2026-07-07T20:59:00.289958+00:00", "y": 63598.317669252}], "symPnl": {"BTC/USD": [{"x": "2026-07-07T16:23:00.664198+00:00", "y": 0}, {"x": "2026-07-07T16:28:00.604616+00:00", "y": 0}, {"x": "2026-07-07T16:31:00.616280+00:00", "y": 0}, {"x": "2026-07-07T17:02:00.508033+00:00", "y": -5.99}, {"x": "2026-07-07T17:07:00.587692+00:00", "y": -5.99}, {"x": "2026-07-07T17:12:00.714169+00:00", "y": -5.99}, {"x": "2026-07-07T17:28:00.440541+00:00", "y": -5.99}, {"x": "2026-07-07T18:25:00.399210+00:00", "y": -25.44}, {"x": "2026-07-07T18:30:01.162420+00:00", "y": -25.44}, {"x": "2026-07-07T18:35:00.336140+00:00", "y": -25.44}, {"x": "2026-07-07T18:38:00.150963+00:00", "y": -25.44}, {"x": "2026-07-07T19:26:00.397110+00:00", "y": -143.53}, {"x": "2026-07-07T19:27:00.166238+00:00", "y": -143.53}, {"x": "2026-07-07T19:28:00.154871+00:00", "y": -143.53}, {"x": "2026-07-07T19:37:00.436153+00:00", "y": -143.53}, {"x": "2026-07-07T20:10:00.287567+00:00", "y": -145.67}, {"x": "2026-07-07T20:17:00.157926+00:00", "y": -145.67}, {"x": "2026-07-07T20:25:00.315590+00:00", "y": -145.67}, {"x": "2026-07-07T20:29:30.604180+00:00", "y": -145.67}, {"x": "2026-07-07T20:59:00.289958+00:00", "y": -185.98}, {"x": "2026-07-07T21:08:00.299115+00:00", "y": -185.98}, {"x": "2026-07-07T21:44:00.314628+00:00", "y": -185.98}, {"x": "2026-07-07T21:54:00.289974+00:00", "y": -185.98}, {"x": "2026-07-07T22:49:00.297242+00:00", "y": -185.98}], "ETH/USD": [{"x": "2026-07-07T16:46:00.386511+00:00", "y": 0}, {"x": "2026-07-07T16:57:00.814792+00:00", "y": 0}, {"x": "2026-07-07T18:37:00.305576+00:00", "y": 0}, {"x": "2026-07-07T19:19:00.761287+00:00", "y": -251.77}, {"x": "2026-07-07T19:20:00.204143+00:00", "y": -251.77}, {"x": "2026-07-07T19:42:00.323603+00:00", "y": -251.77}, {"x": "2026-07-07T19:44:00.302284+00:00", "y": -251.77}, {"x": "2026-07-07T20:20:00.290430+00:00", "y": -258.83}, {"x": "2026-07-07T20:34:00.285012+00:00", "y": -258.83}, {"x": "2026-07-07T21:19:40.971126+00:00", "y": -258.83}]}}</script>
+</details>
+<script>registerSnapshot("20260707_1709");</script>
+<!--SNAP_END-->
+</body>
+</html>

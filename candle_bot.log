@@ -62091,3 +62091,1395 @@ MemoryError
 2026-07-07 11:20:00,173 [INFO] [PATTERN] SOFI | Patterns detected: gravestone_doji
 2026-07-07 11:20:00,335 [INFO] [FILTER] SOFI | RSI: 50.0 | Above 200MA: True
 2026-07-07 11:20:00,335 [INFO] [FILTER] SOFI | Filters failed, waiting for next candle
+2026-07-07 17:09:45,185 [INFO] Waiting for any previous connections to close...
+2026-07-07 17:09:50,200 [INFO] =======================================================
+2026-07-07 17:09:50,201 [INFO]   Alpaca Candlestick Bot starting up (v2)
+2026-07-07 17:09:50,201 [INFO]   Mode: PAPER
+2026-07-07 17:09:50,202 [INFO]   Position size: 5.0% of portfolio, max $5000, cash-only
+2026-07-07 17:09:50,202 [INFO]   Stocks:  ['AAPL', 'SPY', 'TSLA', 'NVDA', 'SOFI', 'PLTR', 'AAL']
+2026-07-07 17:09:50,202 [INFO]   Crypto:  ['BTC/USD', 'ETH/USD']
+2026-07-07 17:09:50,202 [INFO] =======================================================
+2026-07-07 17:09:50,214 [INFO] Restored tracked positions: ['ETH/USD', 'BTC/USD']
+2026-07-07 17:09:50,215 [INFO] Streams live. Listening for bars...
+2026-07-07 17:09:50,219 [INFO] Bot is running and waiting for bars...
+2026-07-07 17:09:50,223 [INFO] started data stream
+2026-07-07 17:09:50,224 [INFO] starting data websocket connection
+2026-07-07 17:09:50,225 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:50,224 [INFO] started data stream
+2026-07-07 17:09:50,228 [INFO] starting data websocket connection
+2026-07-07 17:09:50,231 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:50,796 [INFO] [REPORT] Report updated -> report_history.html
+2026-07-07 17:09:50,819 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:50,857 [INFO] starting data websocket connection
+2026-07-07 17:09:50,858 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:50,935 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:50,938 [INFO] starting data websocket connection
+2026-07-07 17:09:50,938 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:51,318 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:51,320 [INFO] starting data websocket connection
+2026-07-07 17:09:51,320 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:51,412 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:51,415 [INFO] starting data websocket connection
+2026-07-07 17:09:51,415 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:51,798 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:51,799 [INFO] starting data websocket connection
+2026-07-07 17:09:51,800 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:51,899 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:51,901 [INFO] starting data websocket connection
+2026-07-07 17:09:51,901 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:52,259 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:52,260 [INFO] starting data websocket connection
+2026-07-07 17:09:52,260 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:52,348 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:52,349 [INFO] starting data websocket connection
+2026-07-07 17:09:52,349 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:52,763 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:52,766 [INFO] starting data websocket connection
+2026-07-07 17:09:52,766 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:52,772 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:52,773 [INFO] starting data websocket connection
+2026-07-07 17:09:52,773 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:53,300 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:53,301 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:53,301 [INFO] starting data websocket connection
+2026-07-07 17:09:53,302 [INFO] starting data websocket connection
+2026-07-07 17:09:53,302 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:53,302 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:53,823 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:53,824 [INFO] starting data websocket connection
+2026-07-07 17:09:53,825 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:54,263 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:54,265 [INFO] starting data websocket connection
+2026-07-07 17:09:54,266 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:54,287 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:54,289 [INFO] starting data websocket connection
+2026-07-07 17:09:54,290 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:54,728 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:54,730 [INFO] starting data websocket connection
+2026-07-07 17:09:54,730 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:54,734 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:54,736 [INFO] starting data websocket connection
+2026-07-07 17:09:54,736 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:55,211 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:55,212 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:55,214 [INFO] starting data websocket connection
+2026-07-07 17:09:55,213 [INFO] starting data websocket connection
+2026-07-07 17:09:55,215 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 17:09:55,215 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:55,686 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:55,689 [INFO] starting data websocket connection
+2026-07-07 17:09:55,689 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 17:09:55,696 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 17:09:55,698 [INFO] starting data websocket connection
+2026-07-07 17:09:55,698 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:29:56,928 [INFO] Waiting for any previous connections to close...
+2026-07-07 18:30:01,932 [INFO] =======================================================
+2026-07-07 18:30:01,933 [INFO]   Alpaca Candlestick Bot starting up (v2)
+2026-07-07 18:30:01,933 [INFO]   Mode: PAPER
+2026-07-07 18:30:01,934 [INFO]   Position size: 5.0% of portfolio, max $5000, cash-only
+2026-07-07 18:30:01,934 [INFO]   Stocks:  ['AAPL', 'SPY', 'TSLA', 'NVDA', 'SOFI', 'PLTR', 'AAL']
+2026-07-07 18:30:01,934 [INFO]   Crypto:  ['BTC/USD', 'ETH/USD']
+2026-07-07 18:30:01,934 [INFO] =======================================================
+2026-07-07 18:30:01,983 [INFO] Restored tracked positions: ['ETH/USD', 'BTC/USD']
+2026-07-07 18:30:01,988 [INFO] Streams live. Listening for bars...
+2026-07-07 18:30:02,001 [INFO] started data stream
+2026-07-07 18:30:02,001 [INFO] starting data websocket connection
+2026-07-07 18:30:02,002 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:02,015 [INFO] Bot is running and waiting for bars...
+2026-07-07 18:30:02,028 [INFO] started data stream
+2026-07-07 18:30:02,031 [INFO] starting data websocket connection
+2026-07-07 18:30:02,032 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:02,858 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:02,899 [INFO] starting data websocket connection
+2026-07-07 18:30:02,899 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:02,998 [INFO] [REPORT] Report updated -> report_history.html
+2026-07-07 18:30:03,222 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:03,224 [INFO] starting data websocket connection
+2026-07-07 18:30:03,224 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:03,367 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:03,369 [INFO] starting data websocket connection
+2026-07-07 18:30:03,369 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:03,509 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:03,511 [INFO] starting data websocket connection
+2026-07-07 18:30:03,512 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:03,817 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:03,819 [INFO] starting data websocket connection
+2026-07-07 18:30:03,820 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:04,125 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:04,136 [INFO] starting data websocket connection
+2026-07-07 18:30:04,136 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:04,744 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:04,780 [INFO] starting data websocket connection
+2026-07-07 18:30:04,804 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:05,080 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:05,086 [INFO] starting data websocket connection
+2026-07-07 18:30:05,090 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:05,204 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:05,218 [INFO] starting data websocket connection
+2026-07-07 18:30:05,219 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:05,441 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:05,448 [INFO] starting data websocket connection
+2026-07-07 18:30:05,456 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:05,584 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:05,592 [INFO] starting data websocket connection
+2026-07-07 18:30:05,597 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:05,801 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:05,805 [INFO] starting data websocket connection
+2026-07-07 18:30:05,805 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:06,094 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:06,103 [INFO] starting data websocket connection
+2026-07-07 18:30:06,113 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:06,189 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:06,199 [INFO] starting data websocket connection
+2026-07-07 18:30:06,209 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:06,438 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:06,443 [INFO] starting data websocket connection
+2026-07-07 18:30:06,448 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:06,567 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:06,572 [INFO] starting data websocket connection
+2026-07-07 18:30:06,576 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:06,777 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:06,780 [INFO] starting data websocket connection
+2026-07-07 18:30:06,783 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:06,899 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:06,904 [INFO] starting data websocket connection
+2026-07-07 18:30:06,905 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:07,103 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:07,109 [INFO] starting data websocket connection
+2026-07-07 18:30:07,113 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:07,234 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:07,239 [INFO] starting data websocket connection
+2026-07-07 18:30:07,242 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:07,445 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:07,450 [INFO] starting data websocket connection
+2026-07-07 18:30:07,456 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:07,570 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:07,574 [INFO] starting data websocket connection
+2026-07-07 18:30:07,575 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:07,771 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:07,773 [INFO] starting data websocket connection
+2026-07-07 18:30:07,774 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:07,907 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:07,909 [INFO] starting data websocket connection
+2026-07-07 18:30:07,909 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:08,110 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:08,114 [INFO] starting data websocket connection
+2026-07-07 18:30:08,115 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:08,233 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:08,235 [INFO] starting data websocket connection
+2026-07-07 18:30:08,236 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:08,430 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:08,432 [INFO] starting data websocket connection
+2026-07-07 18:30:08,433 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:08,543 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:08,546 [INFO] starting data websocket connection
+2026-07-07 18:30:08,547 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:08,753 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:08,755 [INFO] starting data websocket connection
+2026-07-07 18:30:08,756 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:08,863 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:08,865 [INFO] starting data websocket connection
+2026-07-07 18:30:08,866 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:09,072 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:09,074 [INFO] starting data websocket connection
+2026-07-07 18:30:09,074 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:09,184 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:09,188 [INFO] starting data websocket connection
+2026-07-07 18:30:09,188 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:09,373 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:09,375 [INFO] starting data websocket connection
+2026-07-07 18:30:09,376 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:09,505 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:09,507 [INFO] starting data websocket connection
+2026-07-07 18:30:09,508 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:09,709 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:09,711 [INFO] starting data websocket connection
+2026-07-07 18:30:09,711 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:09,839 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:09,841 [INFO] starting data websocket connection
+2026-07-07 18:30:09,841 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:10,031 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:10,032 [INFO] starting data websocket connection
+2026-07-07 18:30:10,033 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:10,151 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:10,153 [INFO] starting data websocket connection
+2026-07-07 18:30:10,154 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:10,365 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:10,367 [INFO] starting data websocket connection
+2026-07-07 18:30:10,368 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:10,489 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:10,491 [INFO] starting data websocket connection
+2026-07-07 18:30:10,491 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:10,703 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:10,705 [INFO] starting data websocket connection
+2026-07-07 18:30:10,705 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:10,818 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:10,820 [INFO] starting data websocket connection
+2026-07-07 18:30:10,820 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:11,030 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:11,032 [INFO] starting data websocket connection
+2026-07-07 18:30:11,032 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:11,162 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:11,164 [INFO] starting data websocket connection
+2026-07-07 18:30:11,165 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:11,356 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:11,358 [INFO] starting data websocket connection
+2026-07-07 18:30:11,358 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:11,474 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:11,476 [INFO] starting data websocket connection
+2026-07-07 18:30:11,477 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:11,671 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:11,673 [INFO] starting data websocket connection
+2026-07-07 18:30:11,674 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:11,785 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:11,787 [INFO] starting data websocket connection
+2026-07-07 18:30:11,788 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:11,996 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:11,998 [INFO] starting data websocket connection
+2026-07-07 18:30:11,998 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:12,121 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:12,123 [INFO] starting data websocket connection
+2026-07-07 18:30:12,123 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:12,323 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:12,326 [INFO] starting data websocket connection
+2026-07-07 18:30:12,326 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:12,453 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:12,454 [INFO] starting data websocket connection
+2026-07-07 18:30:12,455 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:12,656 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:12,658 [INFO] starting data websocket connection
+2026-07-07 18:30:12,658 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:13,174 [ERROR] ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, None, None)>
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\asyncio\streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 2 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: no close frame received or sent
+2026-07-07 18:30:13,357 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:13,358 [INFO] starting data websocket connection
+2026-07-07 18:30:13,359 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:13,641 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:13,643 [INFO] starting data websocket connection
+2026-07-07 18:30:13,644 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:13,819 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:13,821 [INFO] starting data websocket connection
+2026-07-07 18:30:13,822 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:13,956 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:13,958 [INFO] starting data websocket connection
+2026-07-07 18:30:13,958 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:14,129 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:14,131 [INFO] starting data websocket connection
+2026-07-07 18:30:14,131 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:14,259 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:14,261 [INFO] starting data websocket connection
+2026-07-07 18:30:14,262 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:14,498 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:14,500 [INFO] starting data websocket connection
+2026-07-07 18:30:14,500 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:14,529 [ERROR] ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, None, None)>
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\asyncio\streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 2 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: no close frame received or sent
+2026-07-07 18:30:14,634 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:14,636 [INFO] starting data websocket connection
+2026-07-07 18:30:14,636 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:14,833 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:14,836 [INFO] starting data websocket connection
+2026-07-07 18:30:14,837 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:14,973 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:14,976 [INFO] starting data websocket connection
+2026-07-07 18:30:14,977 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:15,177 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:15,180 [INFO] starting data websocket connection
+2026-07-07 18:30:15,180 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:15,311 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:15,313 [INFO] starting data websocket connection
+2026-07-07 18:30:15,313 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:15,506 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:15,508 [INFO] starting data websocket connection
+2026-07-07 18:30:15,508 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:15,643 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:15,645 [INFO] starting data websocket connection
+2026-07-07 18:30:15,645 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:15,827 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:15,829 [INFO] starting data websocket connection
+2026-07-07 18:30:15,830 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:15,962 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:15,964 [INFO] starting data websocket connection
+2026-07-07 18:30:15,964 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:16,156 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:16,184 [INFO] starting data websocket connection
+2026-07-07 18:30:16,198 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:16,290 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:16,292 [INFO] starting data websocket connection
+2026-07-07 18:30:16,292 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:16,386 [ERROR] ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, None, None)>
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\asyncio\streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 2 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: no close frame received or sent
+2026-07-07 18:30:16,524 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:16,527 [INFO] starting data websocket connection
+2026-07-07 18:30:16,527 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:16,538 [ERROR] ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, None, None)>
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\asyncio\streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 2 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: no close frame received or sent
+2026-07-07 18:30:16,597 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:16,599 [INFO] starting data websocket connection
+2026-07-07 18:30:16,599 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:16,838 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:16,840 [INFO] starting data websocket connection
+2026-07-07 18:30:16,840 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:16,913 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:16,916 [INFO] starting data websocket connection
+2026-07-07 18:30:16,919 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:17,151 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:17,154 [INFO] starting data websocket connection
+2026-07-07 18:30:17,155 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:17,227 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:17,230 [INFO] starting data websocket connection
+2026-07-07 18:30:17,231 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:17,462 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:17,465 [INFO] starting data websocket connection
+2026-07-07 18:30:17,465 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:17,532 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:17,533 [INFO] starting data websocket connection
+2026-07-07 18:30:17,534 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:17,754 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:17,756 [INFO] starting data websocket connection
+2026-07-07 18:30:17,756 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:17,814 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:17,815 [INFO] starting data websocket connection
+2026-07-07 18:30:17,816 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:18,044 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:18,047 [INFO] starting data websocket connection
+2026-07-07 18:30:18,049 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:18,121 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:18,123 [INFO] starting data websocket connection
+2026-07-07 18:30:18,123 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:18,348 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:18,350 [INFO] starting data websocket connection
+2026-07-07 18:30:18,350 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:18,420 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:18,422 [ERROR] ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, None, None)>
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\asyncio\streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 2 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: no close frame received or sent
+2026-07-07 18:30:18,424 [INFO] starting data websocket connection
+2026-07-07 18:30:18,425 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:18,663 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:18,665 [INFO] starting data websocket connection
+2026-07-07 18:30:18,665 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-07 18:30:18,733 [ERROR] error during websocket communication: connection limit exceeded
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 343, in _run_forever
+    await self._start_ws()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 135, in _start_ws
+    await self._auth()
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\alpaca\data\live\websocket.py", line 126, in _auth
+    raise ValueError(msg[0].get("msg", "auth failed"))
+ValueError: connection limit exceeded
+2026-07-07 18:30:18,736 [INFO] starting data websocket connection
+2026-07-07 18:30:18,736 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-07 18:30:18,737 [ERROR] ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, None, None)>
+Traceback (most recent call last):
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\site-packages\websockets\legacy\framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\BradySeme\AppData\Local\Programs\Python\Python314\Lib\asyncio\streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 2 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: no close frame received or sent

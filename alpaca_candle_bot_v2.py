@@ -451,9 +451,10 @@ def get_rsi_and_trend(symbol: str, api_key: str, secret_key: str) -> tuple[float
         )
         bars = _hist_client.get_stock_bars(request)
         closes = [bar.close for bar in bars[symbol]]
+        log.info(f"[RSI DEBUG] {symbol} | Got {len(closes)} closes")
 
         if len(closes) < 15:
-            return 50.0, True  # neutral defaults if not enough data
+            return 50.0, True
 
         rsi = calculate_rsi(closes)
         above_200ma = closes[-1] > (sum(closes[-200:]) / min(len(closes), 200))
