@@ -76,7 +76,7 @@ MAX_POSITION_ENTRIES = 3
 STOCK_SYMBOLS = ["AAPL", "SPY", "TSLA", "NVDA", "SOFI", "PLTR", "AAL"]
 
 # Crypto pairs to watch (Alpaca format)
-CRYPTO_SYMBOLS = ["BTC/USD", "ETH/USD"]
+CRYPTO_SYMBOLS = ["BTC/USD", "ETH/USD", "SOL/USD", "ADA/USD", "XRP/USD"]
 
 # Pattern thresholds
 DOJI_BODY_THRESHOLD = 0.05   # body is ≤5% of total range → doji
