@@ -520,9 +520,11 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
             if signal == "buy":
                 if rsi < 40 and above_200ma:
                     log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing buy")
+                    filter_stats["passed"] += 1
                     order_mgr.place_order(symbol, signal, asset_class, candle.close)
                 else:
                     log.info(f"[FILTER] {symbol} | Filters failed on recheck, skipping")
+                    filter_stats["rejected"] += 1
 
             elif signal == "sell":
                 allowed, reason = should_sell(symbol, candle.close)
@@ -531,9 +533,11 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
                     return
                 if rsi > 60 or not above_200ma:
                     log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing sell")
+                    filter_stats["passed"] += 1
                     order_mgr.place_order(symbol, signal, asset_class, candle.close)
                 else:
                     log.info(f"[FILTER] {symbol} | Filters failed on recheck, skipping")
+                    filter_stats["rejected"] += 1
         else:
             # Crypto — no filters, just place the order
             order_mgr.place_order(symbol, signal, asset_class, candle.close)

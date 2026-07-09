@@ -34,7 +34,7 @@ from collections import defaultdict
 
 
 REPORT_FILE = "report_history.html"
-REPORT_INTERVAL_HOURS = 6
+REPORT_INTERVAL_HOURS = 1
 MAX_SNAPSHOTS = 40          # prune oldest beyond this (~10 days at 6h)
 MAX_TRADE_ROWS = 100        # cap trade-log rows per snapshot
 
