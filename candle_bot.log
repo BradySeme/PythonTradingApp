@@ -63483,3 +63483,28 @@ asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 2 expected by
 The above exception was the direct cause of the following exception:
 
 websockets.exceptions.ConnectionClosedError: no close frame received or sent
+2026-07-09 16:38:57,278 [INFO] Waiting for any previous connections to close...
+2026-07-09 16:39:02,290 [INFO] =======================================================
+2026-07-09 16:39:02,290 [INFO]   Alpaca Candlestick Bot starting up (v2)
+2026-07-09 16:39:02,291 [INFO]   Mode: PAPER
+2026-07-09 16:39:02,291 [INFO]   Position size: 5.0% of portfolio, max $5000, cash-only
+2026-07-09 16:39:02,291 [INFO]   Stocks:  ['AAPL', 'SPY', 'TSLA', 'NVDA', 'SOFI', 'PLTR', 'AAL']
+2026-07-09 16:39:02,291 [INFO]   Crypto:  ['BTC/USD', 'ETH/USD', 'SOL/USD', 'ADA/USD', 'XRP/USD']
+2026-07-09 16:39:02,292 [INFO] =======================================================
+2026-07-09 16:39:02,332 [INFO] Restored tracked positions: ['ETH/USD', 'BTC/USD']
+2026-07-09 16:39:02,333 [INFO] Streams live. Listening for bars...
+2026-07-09 16:39:02,334 [INFO] Bot is running and waiting for bars...
+2026-07-09 16:39:02,335 [INFO] started data stream
+2026-07-09 16:39:02,336 [INFO] starting data websocket connection
+2026-07-09 16:39:02,336 [INFO] started data stream
+2026-07-09 16:39:02,336 [INFO] connecting to wss://stream.data.alpaca.markets/v2/iex
+2026-07-09 16:39:02,336 [INFO] starting data websocket connection
+2026-07-09 16:39:02,337 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-09 16:39:03,051 [INFO] connected to wss://stream.data.alpaca.markets/v2/iex
+2026-07-09 16:39:03,054 [INFO] connected to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-07-09 16:39:03,159 [INFO] subscribed to bars: ['ADA/USD', 'XRP/USD', 'BTC/USD', 'ETH/USD', 'SOL/USD']
+2026-07-09 16:39:03,206 [INFO] [REPORT] Report updated -> report_history.html
+2026-07-09 16:39:03,218 [INFO] subscribed to bars: ['AAL', 'AAPL', 'NVDA', 'PLTR', 'SOFI', 'SPY', 'TSLA']
+2026-07-09 16:39:32,335 [INFO] Bot is running and waiting for bars...
+2026-07-09 16:40:02,340 [INFO] Bot is running and waiting for bars...
+2026-07-09 16:40:32,345 [INFO] Bot is running and waiting for bars...
