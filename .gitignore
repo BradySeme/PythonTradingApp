@@ -1,0 +1,6 @@
+.env
+positions.json
+candle_bot.log
+report_history.html
+__pycache__/
+*.pyc

@@ -1,40 +1,54 @@
 """
-Alpaca Candlestick Signal Trading Bot
-======================================
+Alpaca Candlestick Signal Trading Bot — v2 (audited)
+=====================================================
 Streams real-time bars for stocks and crypto, detects candlestick patterns,
 and places buy/sell orders based on detected signals.
 
-Supports all 8 patterns:
-  BUY:  Dragonfly Doji, Morning Star, Hammer, Bullish Engulfing, Three Inside Up
-  SELL: Hanging Man, Three Inside Down, Gravestone Doji
+Key fixes in this version:
+  1. Stop-loss now checked on EVERY bar (previously only when a sell pattern fired)
+  2. Position sizing uses CASH only — no margin/leverage
+  3. Sell filter changed from AND to OR (was nearly impossible to satisfy)
+  4. Entry counting tracked in memory + persisted (was counting lifetime orders)
+  5. RSI calculation fixed (was sampling last 14 gains, not last 14 periods)
+  6. Positions persist across restarts via positions.json
+  7. API keys loaded from environment / .env only — never hardcode in this file
 
 Setup:
-  pip install alpaca-py pandas
+  pip install alpaca-py pytz python-dotenv
 
 Usage:
   python alpaca_candle_bot.py
 """
 
 import asyncio
+import json
 import logging
 import threading
 import os
 import pytz
 from collections import deque
 from datetime import datetime, time as dtime
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
+from reporting import generate_report, REPORT_INTERVAL_HOURS
+from datetime import timedelta
 
-import pandas as pd
+# Optional .env support — create a file named `.env` next to this script with:
+#   API_KEY=your_key
+#   API_SECRET=your_secret
+# and add `.env` to your .gitignore so keys never reach GitHub.
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from alpaca.trading.client import TradingClient
-from alpaca.trading.requests import MarketOrderRequest
-from alpaca.trading.enums import OrderSide, TimeInForce, AssetClass
+from alpaca.trading.requests import LimitOrderRequest
+from alpaca.trading.enums import OrderSide, TimeInForce
 from alpaca.data.live import StockDataStream, CryptoDataStream
 from alpaca.data.models import Bar
 from alpaca.data.enums import DataFeed
-from alpaca.trading.requests import LimitOrderRequest
-from alpaca.trading.requests import GetOrdersRequest
-from alpaca.trading.enums import QueryOrderStatus
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
@@ -43,8 +57,8 @@ from alpaca.data.timeframe import TimeFrame
 #  CONFIG — edit these before running
 # ─────────────────────────────────────────────
 
-API_KEY    = os.environ.get("API_KEY", "PKIYR5XC6TUM3C6Z57EP5FUQIA")
-API_SECRET = os.environ.get("API_SECRET", "9PLmFbtf1kZuevCQGhUcmaSbv8rwMzvAcN4RS8zS5j17")
+API_KEY    = os.environ.get("API_KEY", "")
+API_SECRET = os.environ.get("API_SECRET", "")
 
 # Set to True for paper trading, False for live
 PAPER_TRADING = True
@@ -52,22 +66,26 @@ PAPER_TRADING = True
 # Percentage of portfolio to allocate per trade (0.05 = 5%)
 POSITION_SIZE_PCT = 0.05
 
-# max times to buy the same symbol
-MAX_POSITION_ENTRIES = 3  
+# Hard dollar cap per position — no single symbol can exceed this
+MAX_POSITION_DOLLAR = 5000
+
+# Max times to buy (pyramid into) the same symbol
+MAX_POSITION_ENTRIES = 3
 
 # Stocks to watch
-STOCK_SYMBOLS = ["AAPL", "SPY", "TSLA", "NVDA", "SOFI","PLTR", "AAL"]
+STOCK_SYMBOLS = ["AAPL", "SPY", "TSLA", "NVDA", "SOFI", "PLTR", "AAL"]
 
 # Crypto pairs to watch (Alpaca format)
-CRYPTO_SYMBOLS = ["BTC/USD", "ETH/USD"]
+CRYPTO_SYMBOLS = ["BTC/USD", "ETH/USD", "SOL/USD", "ADA/USD", "XRP/USD"]
 
-# Minimum body-to-range ratio for pattern confirmation (0.0–1.0)
-DOJI_BODY_THRESHOLD   = 0.05   # body is ≤5% of total range → doji
-HAMMER_SHADOW_RATIO   = 2.0    # lower shadow ≥ 2× body size
-ENGULF_CONFIRM        = True   # require full engulfing (strict)
+# Pattern thresholds
+DOJI_BODY_THRESHOLD = 0.05   # body is ≤5% of total range → doji
+HAMMER_SHADOW_RATIO = 2.0    # lower shadow ≥ 2× body size
 
-MIN_HOLD_MINUTES = 30       # minimum minutes before selling
-STOP_LOSS_PCT    = 0.02     # 2% stop loss
+MIN_HOLD_MINUTES = 30        # minimum minutes before pattern-based selling
+STOP_LOSS_PCT    = 0.02      # 2% stop loss (checked every bar, bypasses all filters)
+
+POSITIONS_FILE = "positions.json"
 
 # Pattern enable/disable toggles
 ENABLED_PATTERNS = {
@@ -157,14 +175,12 @@ def detect_patterns(candles: deque) -> list[str]:
     # ── Single-candle patterns ──────────────────
 
     if ENABLED_PATTERNS["dragonfly_doji"] and len(c) >= 1:
-        # Doji body at the top, long lower shadow, minimal upper shadow
         if (last.is_doji
                 and last.lower_shadow >= HAMMER_SHADOW_RATIO * max(last.body, 0.001)
                 and last.upper_shadow <= last.body * 1.5):
             detected.append("dragonfly_doji")
 
     if ENABLED_PATTERNS["gravestone_doji"] and len(c) >= 1:
-        # Doji body at the bottom, long upper shadow, minimal lower shadow
         if (last.is_doji
                 and last.upper_shadow >= HAMMER_SHADOW_RATIO * max(last.body, 0.001)
                 and last.lower_shadow <= last.body * 1.5):
@@ -172,27 +188,24 @@ def detect_patterns(candles: deque) -> list[str]:
 
     if ENABLED_PATTERNS["hammer"] and len(c) >= 2:
         prev = c[-2]
-        # Small body near top, long lower shadow ≥ 2× body, appears after downtrend
         if (not last.is_doji
                 and last.lower_shadow >= HAMMER_SHADOW_RATIO * max(last.body, 0.001)
                 and last.upper_shadow <= last.body
-                and prev.is_bearish):  # simple downtrend confirmation
+                and prev.is_bearish):
             detected.append("hammer")
 
     if ENABLED_PATTERNS["hanging_man"] and len(c) >= 2:
         prev = c[-2]
-        # Same shape as hammer but appears after uptrend
         if (not last.is_doji
                 and last.lower_shadow >= HAMMER_SHADOW_RATIO * max(last.body, 0.001)
                 and last.upper_shadow <= last.body
-                and prev.is_bullish):  # simple uptrend confirmation
+                and prev.is_bullish):
             detected.append("hanging_man")
 
     # ── Two-candle patterns ─────────────────────
 
     if ENABLED_PATTERNS["bullish_engulfing"] and len(c) >= 2:
         prev = c[-2]
-        # Bearish candle followed by bullish candle that fully engulfs it
         if (prev.is_bearish and last.is_bullish
                 and last.open <= prev.close
                 and last.close >= prev.open):
@@ -202,30 +215,27 @@ def detect_patterns(candles: deque) -> list[str]:
 
     if ENABLED_PATTERNS["morning_star"] and len(c) >= 3:
         c1, c2, c3 = c[-3], c[-2], c[-1]
-        # Large bearish → small body (gap down) → large bullish closing into c1
         if (c1.is_bearish
-                and c2.body / c2.range < 0.3        # small middle candle
-                and c2.close < c1.close              # gap or step down
+                and c2.body / c2.range < 0.3
+                and c2.close < c1.close
                 and c3.is_bullish
-                and c3.close >= (c1.open + c1.close) / 2):  # closes into bearish body
+                and c3.close >= (c1.open + c1.close) / 2):
             detected.append("morning_star")
 
     if ENABLED_PATTERNS["three_inside_up"] and len(c) >= 3:
         c1, c2, c3 = c[-3], c[-2], c[-1]
-        # Large bearish, small bullish inside, large bullish closing above c1 open
         if (c1.is_bearish
                 and c2.is_bullish
-                and c2.open >= c1.close and c2.close <= c1.open  # inside c1
+                and c2.open >= c1.close and c2.close <= c1.open
                 and c3.is_bullish
                 and c3.close > c1.open):
             detected.append("three_inside_up")
 
     if ENABLED_PATTERNS["three_inside_down"] and len(c) >= 3:
         c1, c2, c3 = c[-3], c[-2], c[-1]
-        # Large bullish, small bearish inside, large bearish closing below c1 open
         if (c1.is_bullish
                 and c2.is_bearish
-                and c2.open <= c1.close and c2.close >= c1.open  # inside c1
+                and c2.open <= c1.close and c2.close >= c1.open
                 and c3.is_bearish
                 and c3.close < c1.open):
             detected.append("three_inside_down")
@@ -249,6 +259,45 @@ def classify_signal(patterns: list[str]) -> Optional[str]:
     return None
 
 # ─────────────────────────────────────────────
+#  POSITION TRACKING (persisted across restarts)
+# ─────────────────────────────────────────────
+
+# {symbol: {"entry_price": float, "entry_time": datetime, "entries": int}}
+position_entries: dict[str, dict] = {}
+
+def save_positions():
+    try:
+        serializable = {
+            s: {
+                "entry_price": p["entry_price"],
+                "entry_time": p["entry_time"].isoformat(),
+                "entries": p["entries"],
+            }
+            for s, p in position_entries.items()
+        }
+        with open(POSITIONS_FILE, "w", encoding="utf-8") as f:
+            json.dump(serializable, f)
+    except Exception as e:
+        log.warning(f"Could not save positions: {e}")
+
+def load_positions():
+    try:
+        if not os.path.exists(POSITIONS_FILE):
+            return
+        with open(POSITIONS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        for s, p in data.items():
+            position_entries[s] = {
+                "entry_price": p["entry_price"],
+                "entry_time": datetime.fromisoformat(p["entry_time"]),
+                "entries": p.get("entries", 1),
+            }
+        if position_entries:
+            log.info(f"Restored tracked positions: {list(position_entries.keys())}")
+    except Exception as e:
+        log.warning(f"Could not load positions: {e}")
+
+# ─────────────────────────────────────────────
 #  ORDER EXECUTION
 # ─────────────────────────────────────────────
 
@@ -256,89 +305,76 @@ class OrderManager:
     def __init__(self, client: TradingClient):
         self.client = client
 
-    def get_portfolio_value(self) -> float:
-        account = self.client.get_account()
-        return float(account.portfolio_value)
-
     def get_position_qty(self, symbol: str) -> float:
         """Return current position quantity, 0 if none."""
         try:
-            # Alpaca uses '/' in crypto symbols but not in position lookup
             clean = symbol.replace("/", "")
             pos = self.client.get_open_position(clean)
             return float(pos.qty)
         except Exception:
             return 0.0
-        
-    def get_entry_count(self, symbol: str) -> int:
-        """Count how many times we've entered this symbol."""
-        try:
-            clean = symbol.replace("/", "")
-            activities = self.client.get_portfolio_history()
-            orders = self.client.get_orders(filter=GetOrdersRequest(
-                symbol=clean,
-                side=OrderSide.BUY,
-                status=QueryOrderStatus.FILLED,
-            ))
-            # Count filled buy orders that are part of current open position
-            pos_qty = self.get_position_qty(symbol)
-            if pos_qty <= 0:
-                return 0
-            return min(len(orders), MAX_POSITION_ENTRIES)
-        except Exception:
-            return 0
 
     def place_order(self, symbol: str, side: str, asset_class: str, last_price: float):
-        """Place a market order sized at POSITION_SIZE_PCT of portfolio."""
+        """Place a limit order sized from CASH (never margin)."""
         try:
-            portfolio_value = self.get_portfolio_value()
-            notional = round(portfolio_value * POSITION_SIZE_PCT, 2)
-
-            # Alpaca crypto uses '/' format; stocks don't
-            order_symbol = symbol if asset_class == "crypto" else symbol
-
             if side == "buy":
-                # Check we don't already have a position
-                entry_count = self.get_entry_count(symbol)
-                if entry_count >= MAX_POSITION_ENTRIES:
-                    log.info(f"[SKIP] {symbol} already has {entry_count} entries, max reached.")
+                # Pyramiding cap — tracked locally, not from lifetime order history
+                entry = position_entries.get(symbol)
+                entries = entry["entries"] if entry else 0
+                if entries >= MAX_POSITION_ENTRIES:
+                    log.info(f"[SKIP] {symbol} already has {entries} entries, max reached.")
+                    return
+
+                # CASH-ONLY sizing: target % of portfolio, capped by dollar
+                # limit and by actual available cash. This prevents the bot
+                # from ever borrowing on margin.
+                account = self.client.get_account()
+                cash = float(account.cash)
+                target = float(account.portfolio_value) * POSITION_SIZE_PCT
+                notional = round(min(target, MAX_POSITION_DOLLAR, cash * 0.95), 2)
+
+                if notional < 1:
+                    log.info(f"[SKIP] {symbol} | insufficient cash (${cash:.2f} available)")
                     return
 
                 tif = TimeInForce.GTC if asset_class == "crypto" else TimeInForce.DAY
                 req = LimitOrderRequest(
-                    symbol=order_symbol,
+                    symbol=symbol,
                     notional=notional,
                     side=OrderSide.BUY,
                     time_in_force=tif,
                     limit_price=round(last_price * 1.001, 2),
-                    extended_hours=True,
                 )
-
                 order = self.client.submit_order(req)
-                log.info(f" BUY  {symbol} | ${notional:.2f} notional | order {order.id}")
+                log.info(f"[BUY] {symbol} | ${notional:.2f} notional | entry #{entries + 1} | order {order.id}")
+
                 position_entries[symbol] = {
                     "entry_price": last_price,
                     "entry_time": datetime.now(),
-                 }
+                    "entries": entries + 1,
+                }
+                save_positions()
 
             elif side == "sell":
                 qty = self.get_position_qty(symbol)
                 if qty <= 0:
-                    log.info(f"  No position in {symbol} to sell.")
+                    log.info(f"[SKIP] No position in {symbol} to sell.")
+                    position_entries.pop(symbol, None)
+                    save_positions()
                     return
 
                 tif = TimeInForce.GTC if asset_class == "crypto" else TimeInForce.DAY
                 req = LimitOrderRequest(
-                    symbol=order_symbol,
+                    symbol=symbol,
                     qty=qty,
                     side=OrderSide.SELL,
                     time_in_force=tif,
                     limit_price=round(last_price * 0.999, 2),
-                    extended_hours=True,
                 )
                 order = self.client.submit_order(req)
-                log.info(f" SELL {symbol} | {qty} units | order {order.id}")
+                log.info(f"[SELL] {symbol} | {qty} units | order {order.id}")
                 position_entries.pop(symbol, None)
+                save_positions()
 
         except Exception as e:
             log.error(f"Order failed for {symbol}: {e}")
@@ -349,10 +385,14 @@ class OrderManager:
 
 # Store last 3 candles per symbol (enough for 3-candle patterns)
 bar_buffers: dict[str, deque] = {}
-# Tracks entry price and time for each position
-position_entries: dict[str, dict] = {}
 # Store pending signals waiting for recheck next candle
 pending_signals: dict[str, str] = {}
+
+pattern_log = {}
+filter_stats = {"passed": 0, "rejected": 0}
+
+# Shared historical data client (reused instead of recreated per call)
+_hist_client: Optional[StockHistoricalDataClient] = None
 
 def is_safe_trading_hours() -> bool:
     et = pytz.timezone("America/New_York")
@@ -376,14 +416,18 @@ def make_candle(symbol: str, bar: Bar) -> Candle:
     )
 
 def calculate_rsi(closes: list, period: int = 14) -> float:
-    """Calculate RSI from a list of closing prices."""
+    """
+    Calculate RSI from a list of closing prices.
+    FIXED: averages gains/losses over the last `period` deltas
+    (previously it grabbed the last 14 *gains* from the entire history,
+    which skewed the result).
+    """
     if len(closes) < period + 1:
         return 50.0  # neutral if not enough data
     deltas = [closes[i+1] - closes[i] for i in range(len(closes)-1)]
-    gains = [d for d in deltas if d > 0]
-    losses = [-d for d in deltas if d < 0]
-    avg_gain = sum(gains[-period:]) / period
-    avg_loss = sum(losses[-period:]) / period
+    recent = deltas[-period:]
+    avg_gain = sum(d for d in recent if d > 0) / period
+    avg_loss = sum(-d for d in recent if d < 0) / period
     if avg_loss == 0:
         return 100.0
     rs = avg_gain / avg_loss
@@ -391,57 +435,55 @@ def calculate_rsi(closes: list, period: int = 14) -> float:
 
 
 def get_rsi_and_trend(symbol: str, api_key: str, secret_key: str) -> tuple[float, bool]:
-    """
-    Fetch recent historical bars and return:
-    - RSI (14 period)
-    - above_200ma (True if price is above 200-day MA)
-    """
     try:
-        client = StockHistoricalDataClient(api_key, secret_key)
+        global _hist_client
+        if _hist_client is None:
+            _hist_client = StockHistoricalDataClient(api_key, secret_key)
+        client = _hist_client
+
+        end = datetime.now()
+        start = end - timedelta(days=300)  # enough calendar days to get 210 trading days
+
         request = StockBarsRequest(
             symbol_or_symbols=symbol,
             timeframe=TimeFrame.Day,
-            limit=210,  # enough for 200 MA + 14 RSI
+            start=start,
+            end=end,
+            feed=DataFeed.IEX,
+            limit=210,
         )
         bars = client.get_stock_bars(request)
         closes = [bar.close for bar in bars[symbol]]
+        log.info(f"[RSI DEBUG] {symbol} | Got {len(closes)} closes")
 
         if len(closes) < 15:
-            return 50.0, True  # neutral defaults if not enough data
+            return 50.0, True
 
         rsi = calculate_rsi(closes)
         above_200ma = closes[-1] > (sum(closes[-200:]) / min(len(closes), 200))
-
         return rsi, above_200ma
 
     except Exception as e:
         log.warning(f"Could not fetch RSI/trend for {symbol}: {e}")
-        return 50.0, True  # neutral defaults on error
+        return 50.0, True
+
 
 def should_sell(symbol: str, current_price: float) -> tuple[bool, str]:
     """
-    Returns (True, reason) if allowed to sell, (False, reason) if not.
-    Checks minimum hold time and stop loss.
+    Returns (True, reason) if a pattern-based sell is allowed.
+    Stop-loss is handled separately in handle_bar and does NOT go through here.
     """
     if symbol not in position_entries:
         return True, "no entry tracked"
 
     entry = position_entries[symbol]
-    entry_price = entry["entry_price"]
-    entry_time  = entry["entry_time"]
+    entry_time = entry["entry_time"]
     held_minutes = (datetime.now() - entry_time).total_seconds() / 60
-    loss_pct = (entry_price - current_price) / entry_price
 
-    # Always sell if stop loss hit regardless of hold time
-    if loss_pct >= STOP_LOSS_PCT:
-        return True, f"stop loss triggered ({loss_pct*100:.2f}% loss)"
-
-    # Block sell if minimum hold time not reached
     if held_minutes < MIN_HOLD_MINUTES:
         return False, f"held only {held_minutes:.1f} min, minimum is {MIN_HOLD_MINUTES}"
 
     return True, f"hold time satisfied ({held_minutes:.1f} min)"
-
 
 
 def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str):
@@ -457,10 +499,20 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
         f"L:{candle.low:.4f} C:{candle.close:.4f}"
     )
 
-    if len(buf) < 1:
-        return
+    # ── STOP LOSS — checked on EVERY bar, bypasses all filters ──────
+    # This is the critical fix: previously the stop loss could only fire
+    # if a sell PATTERN happened to appear, which meant a crashing position
+    # with no pattern would never exit.
+    if symbol in position_entries:
+        entry_price = position_entries[symbol]["entry_price"]
+        loss_pct = (entry_price - candle.close) / entry_price
+        if loss_pct >= STOP_LOSS_PCT:
+            log.info(f"[STOP LOSS] {symbol} down {loss_pct*100:.2f}% from entry — exiting now")
+            order_mgr.place_order(symbol, "sell", asset_class, candle.close)
+            pending_signals.pop(symbol, None)
+            return
 
-    # Check if there's a pending signal from last candle waiting for recheck
+    # ── Pending signal recheck from previous candle ─────────────────
     if symbol in pending_signals:
         signal = pending_signals.pop(symbol)
         log.info(f"[RECHECK] {symbol} | Rechecking pending {signal} signal...")
@@ -472,20 +524,26 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
             if signal == "buy":
                 if rsi < 40 and above_200ma:
                     log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing buy")
+                    filter_stats["passed"] += 1
                     order_mgr.place_order(symbol, signal, asset_class, candle.close)
                 else:
                     log.info(f"[FILTER] {symbol} | Filters failed on recheck, skipping")
+                    filter_stats["rejected"] += 1
+                    pending_signals[symbol] = signal
 
             elif signal == "sell":
                 allowed, reason = should_sell(symbol, candle.close)
                 if not allowed:
                     log.info(f"[HOLD] {symbol} | Sell blocked — {reason}")
                     return
-                if rsi > 60 and not above_200ma:
+                if rsi > 60 or not above_200ma:
                     log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing sell")
+                    filter_stats["passed"] += 1
                     order_mgr.place_order(symbol, signal, asset_class, candle.close)
                 else:
                     log.info(f"[FILTER] {symbol} | Filters failed on recheck, skipping")
+                    filter_stats["rejected"] += 1
+                    pending_signals[symbol] = signal
         else:
             # Crypto — no filters, just place the order
             order_mgr.place_order(symbol, signal, asset_class, candle.close)
@@ -500,8 +558,13 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
     if not signal:
         return
 
-    # Crypto trades without filters
+    # Crypto trades without filters (but sell still respects min hold time)
     if asset_class == "crypto":
+        if signal == "sell":
+            allowed, reason = should_sell(symbol, candle.close)
+            if not allowed:
+                log.info(f"[HOLD] {symbol} | Sell blocked — {reason}")
+                return
         order_mgr.place_order(symbol, signal, asset_class, candle.close)
         return
 
@@ -522,7 +585,12 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
         if not allowed:
             log.info(f"[HOLD] {symbol} | Sell blocked — {reason}")
             return
-        if rsi > 60 and not above_200ma:
+        # FIXED: was `rsi > 60 AND not above_200ma`, which almost never
+        # happens together (overbought stocks are usually above their 200MA).
+        # That meant pattern-based sells basically never executed and the
+        # only exit was the stop loss. OR is the correct logic here:
+        # sell if overbought OR if the long-term trend has turned bearish.
+        if rsi > 60 or not above_200ma:
             log.info(f"[FILTER] {symbol} | Filters passed, placing sell")
             order_mgr.place_order(symbol, signal, asset_class, candle.close)
         else:
@@ -534,15 +602,24 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
 # ─────────────────────────────────────────────
 
 async def main():
+    if not API_KEY or not API_SECRET:
+        log.error("API_KEY / API_SECRET not set. Create a .env file next to this "
+                  "script with API_KEY=... and API_SECRET=... or set them as "
+                  "environment variables (Railway: Variables tab).")
+        return
+
     log.info("Waiting for any previous connections to close...")
-    await asyncio.sleep(5)  # 5 second buffer on startup
+    await asyncio.sleep(5)
     log.info("=" * 55)
-    log.info("  Alpaca Candlestick Bot starting up")
+    log.info("  Alpaca Candlestick Bot starting up (v2)")
     log.info(f"  Mode: {'PAPER' if PAPER_TRADING else ' LIVE'}")
-    log.info(f"  Position size: {POSITION_SIZE_PCT*100:.1f}% of portfolio per trade")
+    log.info(f"  Position size: {POSITION_SIZE_PCT*100:.1f}% of portfolio, "
+             f"max ${MAX_POSITION_DOLLAR}, cash-only")
     log.info(f"  Stocks:  {STOCK_SYMBOLS}")
     log.info(f"  Crypto:  {CRYPTO_SYMBOLS}")
     log.info("=" * 55)
+
+    load_positions()
 
     trading_client = TradingClient(
         api_key=API_KEY,
@@ -553,8 +630,6 @@ async def main():
     order_mgr = OrderManager(trading_client)
 
     # ── Stock stream ──────────────────────────
-
-
     stock_stream = StockDataStream(
         api_key=API_KEY,
         secret_key=API_SECRET,
@@ -577,7 +652,6 @@ async def main():
 
     crypto_stream.subscribe_bars(on_crypto_bar, *CRYPTO_SYMBOLS)
 
-    # Run both streams concurrently
     log.info("Streams live. Listening for bars...")
 
     async def heartbeat():
@@ -591,7 +665,12 @@ async def main():
     stock_thread.start()
     crypto_thread.start()
 
-    await heartbeat()
+    async def report_loop():
+        while True:
+            generate_report(trading_client, log, pattern_log, filter_stats)
+            await asyncio.sleep(REPORT_INTERVAL_HOURS * 3600)
+
+    await asyncio.gather(heartbeat(), report_loop())
 
 
 if __name__ == "__main__":
