@@ -98,6 +98,15 @@ ENABLED_PATTERNS = {
     "three_inside_down": True,
     "gravestone_doji":   True,
 }
+# midnight (your machine's local time)
+CRYPTO_QUIET_START = dtime(0, 0)   
+# 6 AM
+CRYPTO_QUIET_END   = dtime(6, 0)  
+
+# buy when RSI below this (was 40)
+RSI_BUY_MAX  = 50 
+# sell when RSI above this (was 60)
+RSI_SELL_MIN = 55   
 
 # ─────────────────────────────────────────────
 #  LOGGING
@@ -399,6 +408,10 @@ def is_safe_trading_hours() -> bool:
     now = datetime.now(et).time()
     return dtime(9, 45) <= now <= dtime(15, 45)
 
+def is_crypto_quiet_hours() -> bool:
+    now = datetime.now().time()
+    return CRYPTO_QUIET_START <= now <= CRYPTO_QUIET_END
+
 def get_buffer(symbol: str) -> deque:
     if symbol not in bar_buffers:
         bar_buffers[symbol] = deque(maxlen=3)
@@ -522,7 +535,7 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
             log.info(f"[FILTER] {symbol} | RSI: {rsi:.1f} | Above 200MA: {above_200ma}")
 
             if signal == "buy":
-                if rsi < 40 and above_200ma:
+                if rsi < RSI_BUY_MAX and above_200ma:
                     log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing buy")
                     filter_stats["passed"] += 1
                     order_mgr.place_order(symbol, signal, asset_class, candle.close)
@@ -536,7 +549,7 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
                 if not allowed:
                     log.info(f"[HOLD] {symbol} | Sell blocked — {reason}")
                     return
-                if rsi > 60 or not above_200ma:
+                if rsi > RSI_SELL_MIN or not above_200ma:
                     log.info(f"[FILTER] {symbol} | Filters passed on recheck, placing sell")
                     filter_stats["passed"] += 1
                     order_mgr.place_order(symbol, signal, asset_class, candle.close)
@@ -573,7 +586,7 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
     log.info(f"[FILTER] {symbol} | RSI: {rsi:.1f} | Above 200MA: {above_200ma}")
 
     if signal == "buy":
-        if rsi < 40 and above_200ma:
+        if rsi < RSI_BUY_MAX and above_200ma:
             log.info(f"[FILTER] {symbol} | Filters passed, placing buy")
             order_mgr.place_order(symbol, signal, asset_class, candle.close)
         else:
@@ -590,7 +603,7 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
         # That meant pattern-based sells basically never executed and the
         # only exit was the stop loss. OR is the correct logic here:
         # sell if overbought OR if the long-term trend has turned bearish.
-        if rsi > 60 or not above_200ma:
+        if rsi > RSI_SELL_MIN or not above_200ma:
             log.info(f"[FILTER] {symbol} | Filters passed, placing sell")
             order_mgr.place_order(symbol, signal, asset_class, candle.close)
         else:
