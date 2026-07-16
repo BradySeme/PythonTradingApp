@@ -33,10 +33,6 @@ from typing import Optional
 from reporting import generate_report, REPORT_INTERVAL_HOURS
 from datetime import timedelta
 
-# Optional .env support — create a file named `.env` next to this script with:
-#   API_KEY=your_key
-#   API_SECRET=your_secret
-# and add `.env` to your .gitignore so keys never reach GitHub.
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -57,8 +53,8 @@ from alpaca.data.timeframe import TimeFrame
 #  CONFIG — edit these before running
 # ─────────────────────────────────────────────
 
-API_KEY    = os.environ.get("API_KEY", "")
-API_SECRET = os.environ.get("API_SECRET", "")
+API_KEY    = os.environ.get("API_KEY")
+API_SECRET = os.environ.get("API_SECRET")
 
 # Set to True for paper trading, False for live
 PAPER_TRADING = True
@@ -84,6 +80,9 @@ HAMMER_SHADOW_RATIO = 2.0    # lower shadow ≥ 2× body size
 
 MIN_HOLD_MINUTES = 30        # minimum minutes before pattern-based selling
 STOP_LOSS_PCT    = 0.02      # 2% stop loss (checked every bar, bypasses all filters)
+
+VOLUME_MULTIPLIER = 1.5     # current bar volume must be at least this × recent avg
+VOLUME_LOOKBACK   = 15      # how many prior bars to average for comparison
 
 POSITIONS_FILE = "positions.json"
 
@@ -414,7 +413,7 @@ def is_crypto_quiet_hours() -> bool:
 
 def get_buffer(symbol: str) -> deque:
     if symbol not in bar_buffers:
-        bar_buffers[symbol] = deque(maxlen=3)
+        bar_buffers[symbol] = deque(maxlen=20)  # store last 20 candles
     return bar_buffers[symbol]
 
 def make_candle(symbol: str, bar: Bar) -> Candle:
@@ -498,6 +497,26 @@ def should_sell(symbol: str, current_price: float) -> tuple[bool, str]:
 
     return True, f"hold time satisfied ({held_minutes:.1f} min)"
 
+def has_sufficient_volume(candles: deque) -> tuple[bool, str]:
+    """
+    Returns (True, reason) if the current bar's volume is at least
+    VOLUME_MULTIPLIER × the average of the previous VOLUME_LOOKBACK bars.
+    """
+    c = list(candles)
+    if len(c) < VOLUME_LOOKBACK + 1:
+        return True, "not enough history yet, allowing trade"
+
+    current_volume = c[-1].volume
+    recent = c[-(VOLUME_LOOKBACK + 1):-1]  # prior bars, excluding the current one
+    avg_volume = sum(bar.volume for bar in recent) / len(recent)
+
+    if avg_volume == 0:
+        return True, "no recent volume history"
+
+    ratio = current_volume / avg_volume
+    if ratio >= VOLUME_MULTIPLIER:
+        return True, f"volume ok ({ratio:.2f}x avg)"
+    return False, f"low volume ({ratio:.2f}x avg, need {VOLUME_MULTIPLIER}x)"
 
 def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str):
     candle = make_candle(symbol, bar)
@@ -569,6 +588,12 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
     log.info(f"[PATTERN] {symbol} | Patterns detected: {', '.join(patterns)}")
     signal = classify_signal(patterns)
     if not signal:
+        return
+    
+    # Volume filter — reject weak signals on thin volume
+    vol_ok, vol_reason = has_sufficient_volume(buf)
+    log.info(f"[VOLUME] {symbol} | {vol_reason}")
+    if not vol_ok:
         return
 
     # Crypto trades without filters (but sell still respects min hold time)
