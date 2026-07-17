@@ -108,6 +108,8 @@ RSI_SELL_MIN = 55   # sell when RSI above this (was 60)
 TRAIL_ACTIVATE_PCT = 0.02   # start trailing once up this much (2%)
 TRAIL_DISTANCE_PCT = 0.03   # trailing stop sits this far below peak (3%)
 
+TAKE_PROFIT_PCT = 0.10   # sell the full position at +10% gain
+
 # ─────────────────────────────────────────────
 #  LOGGING
 # ─────────────────────────────────────────────
@@ -544,6 +546,14 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
         pos = position_entries[symbol]
         entry_price = pos["entry_price"]
         price = candle.close
+    
+        # ── TAKE PROFIT — hard exit at target, checked before any stop ──
+        gain = (price - entry_price) / entry_price
+        if gain >= TAKE_PROFIT_PCT:
+            log.info(f"[TAKE PROFIT] {symbol} hit +{gain*100:.2f}% — selling full position")
+            order_mgr.place_order(symbol, "sell", asset_class, price)
+            pending_signals.pop(symbol, None)
+            return
 
         # Update peak price if we've made a new high
         if price > pos.get("peak_price", entry_price):
