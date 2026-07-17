@@ -102,10 +102,11 @@ CRYPTO_QUIET_START = dtime(0, 0)
 # 6 AM
 CRYPTO_QUIET_END   = dtime(6, 0)  
 
-# buy when RSI below this (was 40)
-RSI_BUY_MAX  = 50 
-# sell when RSI above this (was 60)
-RSI_SELL_MIN = 55   
+RSI_BUY_MAX  = 50 # buy when RSI below this (was 40)
+RSI_SELL_MIN = 55   # sell when RSI above this (was 60)
+
+TRAIL_ACTIVATE_PCT = 0.02   # start trailing once up this much (2%)
+TRAIL_DISTANCE_PCT = 0.03   # trailing stop sits this far below peak (3%)
 
 # ─────────────────────────────────────────────
 #  LOGGING
@@ -280,6 +281,7 @@ def save_positions():
                 "entry_price": p["entry_price"],
                 "entry_time": p["entry_time"].isoformat(),
                 "entries": p["entries"],
+                "peak_price": p.get("peak_price", p["entry_price"]),
             }
             for s, p in position_entries.items()
         }
@@ -299,6 +301,7 @@ def load_positions():
                 "entry_price": p["entry_price"],
                 "entry_time": datetime.fromisoformat(p["entry_time"]),
                 "entries": p.get("entries", 1),
+                "peak_price": p.get("peak_price", p["entry_price"]),
             }
         if position_entries:
             log.info(f"Restored tracked positions: {list(position_entries.keys())}")
@@ -360,6 +363,7 @@ class OrderManager:
                     "entry_price": last_price,
                     "entry_time": datetime.now(),
                     "entries": entries + 1,
+                    "peak_price": last_price,
                 }
                 save_positions()
 
@@ -535,14 +539,37 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
     # This is the critical fix: previously the stop loss could only fire
     # if a sell PATTERN happened to appear, which meant a crashing position
     # with no pattern would never exit.
+    # ── STOP LOSS — two-stage: fixed stop early, trailing stop in profit ──
     if symbol in position_entries:
-        entry_price = position_entries[symbol]["entry_price"]
-        loss_pct = (entry_price - candle.close) / entry_price
-        if loss_pct >= STOP_LOSS_PCT:
-            log.info(f"[STOP LOSS] {symbol} down {loss_pct*100:.2f}% from entry — exiting now")
-            order_mgr.place_order(symbol, "sell", asset_class, candle.close)
-            pending_signals.pop(symbol, None)
-            return
+        pos = position_entries[symbol]
+        entry_price = pos["entry_price"]
+        price = candle.close
+
+        # Update peak price if we've made a new high
+        if price > pos.get("peak_price", entry_price):
+            pos["peak_price"] = price
+            save_positions()
+
+        peak = pos.get("peak_price", entry_price)
+        gain_from_entry = (price - entry_price) / entry_price
+
+        # Stage 2: trailing stop (only active once up TRAIL_ACTIVATE_PCT)
+        if gain_from_entry >= TRAIL_ACTIVATE_PCT:
+            drop_from_peak = (peak - price) / peak
+            if drop_from_peak >= TRAIL_DISTANCE_PCT:
+                log.info(f"[TRAIL STOP] {symbol} dropped {drop_from_peak*100:.2f}% "
+                         f"from peak ${peak:.2f} (still +{gain_from_entry*100:.2f}% vs entry) — exiting")
+                order_mgr.place_order(symbol, "sell", asset_class, price)
+                pending_signals.pop(symbol, None)
+                return
+        else:
+            # Stage 1: fixed stop loss (position not yet in profit territory)
+            loss_pct = (entry_price - price) / entry_price
+            if loss_pct >= STOP_LOSS_PCT:
+                log.info(f"[STOP LOSS] {symbol} down {loss_pct*100:.2f}% from entry — exiting now")
+                order_mgr.place_order(symbol, "sell", asset_class, price)
+                pending_signals.pop(symbol, None)
+                return
 
     # ── Pending signal recheck from previous candle ─────────────────
     if symbol in pending_signals:
