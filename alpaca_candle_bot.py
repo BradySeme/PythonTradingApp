@@ -705,7 +705,7 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
             log.info(f"[FILTER] {symbol} | Filters failed, waiting for next candle")
             filter_stats["rejected"] += 1
             pending_signals[symbol] = signal
-
+ 
     elif signal == "sell":
         allowed, reason = should_sell(symbol, candle.close)
         if not allowed:
