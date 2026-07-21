@@ -110,6 +110,8 @@ TRAIL_DISTANCE_PCT = 0.03   # trailing stop sits this far below peak (3%)
 
 TAKE_PROFIT_PCT = 0.10   # sell the full position at +10% gain
 
+CRYPTO_MA_PERIOD = 75    # moving average period for crypto trend confirmation
+
 # ─────────────────────────────────────────────
 #  LOGGING
 # ─────────────────────────────────────────────
@@ -414,12 +416,13 @@ def is_safe_trading_hours() -> bool:
     return dtime(9, 45) <= now <= dtime(15, 45)
 
 def is_crypto_quiet_hours() -> bool:
-    now = datetime.now().time()
+    mt = pytz.timezone("America/Denver")
+    now = datetime.now(mt).time()
     return CRYPTO_QUIET_START <= now <= CRYPTO_QUIET_END
 
 def get_buffer(symbol: str) -> deque:
     if symbol not in bar_buffers:
-        bar_buffers[symbol] = deque(maxlen=20)  # store last 20 candles
+        bar_buffers[symbol] = deque(maxlen=100)  # store last 100 candles
     return bar_buffers[symbol]
 
 def make_candle(symbol: str, bar: Bar) -> Candle:
@@ -524,6 +527,35 @@ def has_sufficient_volume(candles: deque) -> tuple[bool, str]:
         return True, f"volume ok ({ratio:.2f}x avg)"
     return False, f"low volume ({ratio:.2f}x avg, need {VOLUME_MULTIPLIER}x)"
 
+CRYPTO_MA_PERIOD = 75  # bars for crypto trend confirmation
+
+def get_crypto_trend(candles: deque) -> tuple[bool, str]:
+    """Returns (above_ma, reason) using the last CRYPTO_MA_PERIOD closes."""
+    c = list(candles)
+    if len(c) < CRYPTO_MA_PERIOD:
+        return True, f"not enough history ({len(c)}/{CRYPTO_MA_PERIOD} bars)"
+    closes = [x.close for x in c[-CRYPTO_MA_PERIOD:]]
+    ma = sum(closes) / len(closes)
+    price = c[-1].close
+    above = price > ma
+    return above, f"price ${price:.2f} {'above' if above else 'below'} {CRYPTO_MA_PERIOD}-MA ${ma:.2f}"
+
+def get_crypto_trend(candles: deque) -> tuple[bool, str]:
+    """
+    Returns (above_ma, reason) using the in-memory candle buffer.
+    Uses the last CRYPTO_MA_PERIOD closes to compute a simple moving average.
+    """
+    c = list(candles)
+    if len(c) < CRYPTO_MA_PERIOD:
+        # Not enough history yet — allow trades rather than block everything
+        return True, f"not enough history ({len(c)}/{CRYPTO_MA_PERIOD} bars)"
+
+    closes = [candle.close for candle in c[-CRYPTO_MA_PERIOD:]]
+    ma = sum(closes) / len(closes)
+    price = c[-1].close
+    above = price > ma
+    return above, f"price ${price:.2f} {'above' if above else 'below'} {CRYPTO_MA_PERIOD}-MA ${ma:.2f}"
+
 def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str):
     candle = make_candle(symbol, bar)
     buf = get_buffer(symbol)
@@ -614,8 +646,9 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
                     filter_stats["rejected"] += 1
                     pending_signals[symbol] = signal
         else:
-            # Crypto — no filters, just place the order
-            order_mgr.place_order(symbol, signal, asset_class, candle.close)
+            # Crypto shouldn't be queued, but if it is, drop it rather than
+            # bypassing the trend/quiet-hours filters.
+            log.info(f"[RECHECK] {symbol} | Dropping stale crypto signal")
         return
 
     patterns = detect_patterns(buf)
@@ -633,14 +666,30 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
     if not vol_ok:
         return
 
-    # Crypto trades without filters (but sell still respects min hold time)
+    # Crypto — quiet hours + 75-MA trend filter + min hold
     if asset_class == "crypto":
-        if signal == "sell":
+        above_ma, ma_reason = get_crypto_trend(buf)
+        log.info(f"[CRYPTO TREND] {symbol} | {ma_reason}")
+
+        if signal == "buy":
+            if is_crypto_quiet_hours():
+                log.info(f"[QUIET] {symbol} | Skipping overnight crypto buy")
+                return
+            if not above_ma:
+                log.info(f"[CRYPTO TREND] {symbol} | Below MA, skipping buy")
+                return
+            order_mgr.place_order(symbol, signal, asset_class, candle.close)
+
+        elif signal == "sell":
             allowed, reason = should_sell(symbol, candle.close)
             if not allowed:
                 log.info(f"[HOLD] {symbol} | Sell blocked — {reason}")
                 return
-        order_mgr.place_order(symbol, signal, asset_class, candle.close)
+            if not above_ma:
+                log.info(f"[CRYPTO TREND] {symbol} | Below MA, confirming sell")
+                order_mgr.place_order(symbol, signal, asset_class, candle.close)
+            else:
+                log.info(f"[CRYPTO TREND] {symbol} | Still above MA, holding through sell signal")
         return
 
     # Stocks — check RSI + trend filter
@@ -650,9 +699,11 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
     if signal == "buy":
         if rsi < RSI_BUY_MAX and above_200ma:
             log.info(f"[FILTER] {symbol} | Filters passed, placing buy")
+            filter_stats["passed"] += 1
             order_mgr.place_order(symbol, signal, asset_class, candle.close)
         else:
             log.info(f"[FILTER] {symbol} | Filters failed, waiting for next candle")
+            filter_stats["rejected"] += 1
             pending_signals[symbol] = signal
 
     elif signal == "sell":
@@ -667,9 +718,11 @@ def handle_bar(symbol: str, bar: Bar, order_mgr: OrderManager, asset_class: str)
         # sell if overbought OR if the long-term trend has turned bearish.
         if rsi > RSI_SELL_MIN or not above_200ma:
             log.info(f"[FILTER] {symbol} | Filters passed, placing sell")
+            filter_stats["passed"] += 1
             order_mgr.place_order(symbol, signal, asset_class, candle.close)
         else:
             log.info(f"[FILTER] {symbol} | Filters failed, waiting for next candle")
+            filter_stats["rejected"] += 1
             pending_signals[symbol] = signal
 
 # ─────────────────────────────────────────────
